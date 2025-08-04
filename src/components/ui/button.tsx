@@ -11,6 +11,8 @@ const buttonVariants = cva(
       variant: {
         teal:
           "bg-teal-500 hover:bg-teal-600 cursor-pointer text-white shadow-xs ",
+        green:
+          "bg-green-500 hover:bg-green-600 cursor-pointer text-white shadow-xs ",
         default:
           "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
         destructive:

@@ -19,6 +19,8 @@ export default function AppointmentsPage() {
   const router = useRouter();
   const [selectedAppointment,setSelectedAppointment] = useState<Appointment | null>(null)
   const [showRescheduleModal,setShowRescheduleModal] = useState(false)
+  const [openDialogId, setOpenDialogId] = useState<string | null>(null);
+
   const [newDate, setNewDate] = useState( "");
   const [newTime, setNewTime] = useState("");
   const [appointments, setAppointments] = useState<Appointment[]>([]);
@@ -38,10 +40,11 @@ export default function AppointmentsPage() {
       
       const statusOrder: Record<AppointmentStatus, number> = {
       approved: 1,
-      pending: 2,
-      completed: 3,
-      rejected: 4,
-      cancelled:5
+      reschedule:2,
+      pending: 3,
+      completed: 4,
+      rejected: 5,
+      cancelled:6
     };
 
     const sortedAppointments = data.sort((a: { status: AppointmentStatus }, b: { status: AppointmentStatus }) => {
@@ -67,7 +70,7 @@ export default function AppointmentsPage() {
     setShowRescheduleModal(true);
   };
   const reshudleSumbitHandler = async (id: string, date:string, time:string)=>{
-    const res = await rescheduleAppointment(id, date, time);
+    const res = await rescheduleAppointment(id, date, time, "reschedule");
     if(res.ok ){
       toast.success("Appointment reshudled successfully")
       setNewDate("")
@@ -133,7 +136,7 @@ export default function AppointmentsPage() {
               </form>
             </DialogContent>
           </Dialog>
-        )}
+      )}
       <h1 className="text-3xl font-bold mb-6 text-gray-800">My Appointments</h1>
 
       <div className="bg-white rounded-lg shadow overflow-x-auto">
@@ -181,6 +184,8 @@ export default function AppointmentsPage() {
                             ? "bg-sky-100 text-blue-700"
                             : appt.status === "cancelled"
                             ? "bg-red-100 text-red-700"
+                            : appt.status === "reschedule"
+                            ? "bg-violet-100 text-violet-700"
                             : "bg-gray-200 text-gray-700"
                         }`}
                     >
@@ -188,8 +193,8 @@ export default function AppointmentsPage() {
                     </span>
                   </td>
                   <td className="p-3 space-x-2">
-                    {appt.status === "pending" || appt.status == "approved" ? (
-                      <Dialog >
+                    {(appt.status === "pending" || appt.status === "approved" || appt.status === "reschedule") ? (
+                      <Dialog  open={openDialogId === appt.id} onOpenChange={(isOpen) => setOpenDialogId(isOpen ? appt.id : null)} >
                         <DialogTrigger asChild>
                           <button  className="text-sm cursor-pointer bg-teal-500 hover:bg-teal-600 text-white px-3 py-1 rounded">
                             Take Action
@@ -202,18 +207,24 @@ export default function AppointmentsPage() {
                               What would you like to do with this appointment?
                             </DialogDescription>
                           </DialogHeader>
-                          {appt.status == "approved" ?(
+                          {(appt.status === "approved" || appt.status === "reschedule") ?(
                             <div className="gap-4 flex ">
                               <button
-                                onClick={() =>
+                                onClick={() =>{
                                   updateStatus(appt.id, "completed")
-                                }
+                                  setOpenDialogId(null);
+                                  toast.success("Appointment completed.")
+                                }}
                                 className="text-sm cursor-pointer bg-green-500  hover:bg-green-600 text-white px-3 py-1 rounded"
                               >
                                 Completed
                               </button>
                               <button
-                                onClick={() => {handleReschedule(appt)}}
+                                onClick={() => {
+                                  handleReschedule(appt)
+                                  setOpenDialogId(null);
+                                }}
+                              
                                 className="text-sm cursor-pointer bg-teal-500 hover:bg-teal-600 text-white px-3 py-1 rounded"
                               >
                                 Reschedule
@@ -222,23 +233,30 @@ export default function AppointmentsPage() {
                           ):(
                             <div className="flex gap-4 justify-center mt-4">
                               <button
-                                onClick={() =>
+                                onClick={() =>{
                                   updateStatus(appt.id, "approved")
-                                }
+                                  setOpenDialogId(null);
+                                  toast.success("Appointment approved.")
+                                }}
                                 className="text-sm cursor-pointer bg-green-500 w-[84px] hover:bg-green-600 text-white px-3 py-1 rounded"
                               >
                                 Approve
                               </button>
                               <button
-                                onClick={() =>
+                                onClick={() =>{
                                   updateStatus(appt.id, "rejected")
-                                }
+                                  setOpenDialogId(null);
+                                  toast.success("Appointment rejected.")
+                                }}
                                 className="text-sm cursor-pointer bg-red-500 w-[84px] hover:bg-red-600 text-white px-3 py-1 rounded"
                               >
                                 Reject
                               </button>
                               <button
-                                onClick={() => {handleReschedule(appt)}}
+                                onClick={() => {
+                                  handleReschedule(appt)
+                                  setOpenDialogId(null);
+                                }}
                                 className="text-sm cursor-pointer bg-teal-500 hover:bg-teal-600 text-white px-3 py-1 rounded"
                               >
                                 Reschedule
@@ -250,10 +268,21 @@ export default function AppointmentsPage() {
                       </Dialog>
                     ) : (
                       <span className="text-gray-400 italic text-sm">
-                        {appt.status === "cancelled"
-                          ? `${appt.reason || "No reason provided"}`
-                          : "No action"
-                        }
+                        {appt.status === "cancelled" ? (
+                          appt.reason || "No reason provided"
+                        ) : appt.status === "completed" ? (
+                          "No Action"
+                        ) : (
+                          <button
+                            onClick={() => {
+                              handleReschedule(appt);
+                              setOpenDialogId(null);
+                            }}
+                            className="text-sm cursor-pointer bg-teal-500 hover:bg-teal-600 text-white px-3 py-1 rounded"
+                          >
+                            Reschedule
+                          </button>
+                        )}
                       </span>
                     )}
                   </td>

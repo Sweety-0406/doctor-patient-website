@@ -30,7 +30,7 @@ export default function DoctorDashboard() {
       
       const data = await getMyPatientByDoctor(doctor.id);
       const jsonData = await data.json();
-      const scheduleData = res.filter((item:Appointment)=>item.status === "pending" || item.status === "approved")
+      const scheduleData = res.filter((item:Appointment)=>item.status === "pending" || item.status === "approved" || item.status === "rejected" || item.status === "reschedule")
       setAppointments(scheduleData);
       const uniquePatients = new Set(jsonData.map((appt: Appointment) => appt.patientId)).size;
       setPatients(uniquePatients);

@@ -14,6 +14,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import toast from 'react-hot-toast';
 import { rescheduleAppointment, updateAppointmentsByDoctor } from '@/lib/api';
 import { Button } from './ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 
 export type EventDataType = {
   id: string;  
@@ -103,7 +104,7 @@ const MyCalendar = ({scheduleData}:MyCalendarProps)=>{
         }
         const newDate = startDate.toISOString().split('T')[0]; 
         try {
-        const res = await rescheduleAppointment(eventId, newDate, formattedTime)
+        const res = await rescheduleAppointment(eventId, newDate, formattedTime, "reschedule")
         if(res.ok){
             toast.success("Updated successfully");
             setEvents((prevEvents) =>
@@ -114,7 +115,8 @@ const MyCalendar = ({scheduleData}:MyCalendarProps)=>{
                         start: dropInfo.event.startStr,
                         extendedProps: {
                         ...event.extendedProps,
-                        time: formattedTime
+                        time: formattedTime,
+                        status: "reschedule"
                         }
                     }
                     : event
@@ -140,14 +142,30 @@ const MyCalendar = ({scheduleData}:MyCalendarProps)=>{
         }
     };
 
-    const cancelHandler = async (id:string)=>{
-        const res  = await updateAppointmentsByDoctor(id,"rejected")
+    const clickHandler = async (id:string, status:string)=>{
+        const res  = await updateAppointmentsByDoctor(id,status)
         if(res.ok){
-            toast.success("Appointment cancelled successfully.")
-            setEvents((prev)=>prev.filter((appt)=>appt.id !== id))
+            toast.success("Appointment updated successfully.")
+            if(status === "completed"){
+                setEvents((prev)=>prev.filter((appt)=>appt.id !== id))
+            }else{
+                setEvents((prevEvents) =>
+                    prevEvents.map((event) =>
+                    event.id === id
+                        ? {
+                            ...event,
+                            extendedProps: {
+                            ...event.extendedProps,
+                            status: status
+                            }
+                        }
+                        : event
+                    )
+                );
+            }
             setIsDialogOpen(false)
         }else{
-            toast.error("Failed to cancel appointment.")
+            toast.error("Failed to update appointment.")
             setIsDialogOpen(false)
         }
     }
@@ -215,6 +233,8 @@ const MyCalendar = ({scheduleData}:MyCalendarProps)=>{
                                 ? "bg-green-500"
                                 : selectedEvent.extendedProps.status === "pending"
                                 ? "bg-yellow-500"
+                                : selectedEvent.extendedProps.status === "reschedule"
+                                ? "bg-violet-500"
                                 : "bg-red-500"
                             }`}
                             >
@@ -261,9 +281,21 @@ const MyCalendar = ({scheduleData}:MyCalendarProps)=>{
                         }`}
                         >{selectedEvent.extendedProps.triage}</span>
                         </div>
-                        <Button onClick={()=>cancelHandler(selectedEvent.id)} variant="destructive" className='cursor-pointer'>
-                            Cancel appointment
-                        </Button>
+                        {selectedEvent.extendedProps.status == "pending" && (
+                            <div className='flex gap-3'>
+                                <Button onClick={()=>clickHandler(selectedEvent.id, 'rejected')} variant="destructive" className='cursor-pointer'>
+                                    Cancel appointment
+                                </Button>
+                                <Button onClick={()=>clickHandler(selectedEvent.id,"approved")} variant="teal" className='cursor-pointer'>
+                                    Confirm appointment
+                                </Button>
+                            </div>
+                        )}
+                        {(selectedEvent.extendedProps.status == "approved" || selectedEvent.extendedProps.status == "reschedule") && 
+                            <Button onClick={()=>clickHandler(selectedEvent.id,"completed")} variant="green" className='cursor-pointer'>
+                                completed appointment
+                            </Button>
+                        }
                     </div>
                     )}
                 </DialogContent>
@@ -282,19 +314,71 @@ const renderEventContent = (eventInfo: EventContentArg) => {
         ? 'bg-yellow-500'
         : status === 'rejected'
         ? 'bg-red-500'
+        : status === 'reschedule'
+        ? 'bg-violet-500'
         : 'bg-gray-400';
 
+    const borderColor =
+        status === 'approved'
+        ? 'border-green-500'
+        : status === 'pending'
+        ? 'border-yellow-500'
+        : status === 'rejected'
+        ? 'border-red-500'
+        : status === 'reschedule'
+        ? 'border-violet-500'
+        : 'border-gray-400';
+
+    const bgColor =
+        status === 'approved'
+        ? 'bg-green-100'
+        : status === 'pending'
+        ? 'bg-yellow-100'
+        : status === 'rejected'
+        ? 'bg-red-100'
+        : status === 'reschedule'
+        ? 'bg-violet-100'
+        : 'bg-gray-200';
+
     return (
-        <div className="p-2 w-full  rounded-sm shadow-lg bg-teal-50 border border-teal-500 text-xs break-words whitespace-normal">
-            <p className="font-semibold text-gray-700 truncate whitespace-nowrap overflow-hidden">{eventInfo.event.title}</p>
-            <p className="text-red-500 text-xs break-words whitespace-norma">{eventInfo.event.extendedProps.time}</p>
-            {status && (
-                <span className={`inline-block  mt-1 px-2 py-0.5 text-white text-[10px] rounded ${badgeColor}`}>
-                    {status}
-                </span>
-            )}
-        </div>
+        // <div className={`px-1 py-[2.5px] w-full  rounded-sm shadow-lg ${bgColor} border ${borderColor} text-xs break-words whitespace-normal`}>
+        //     <p className="font-semibold text-gray-700 truncate whitespace-nowrap overflow-hidden">{eventInfo.event.title}</p>
+        //     {/* <p className="text-red-500 text-xs break-words whitespace-norma">{eventInfo.event.extendedProps.time}</p> */}
+        //     {status && (
+        //         <span className={`inline-block  mt-1 px-2 py-0.5 text-white text-[10px] rounded ${badgeColor}`}>
+        //             {status}
+        //         </span>
+        //     )}
+        // </div>
+        <Tooltip >
+            <TooltipTrigger className='w-full cursor-pointer'>
+                <div className={`px-1 py-[2.5px] w-full  rounded-sm shadow-lg ${bgColor} border ${borderColor} text-xs break-words whitespace-normal`}>
+                    <p className="font-semibold text-gray-700 truncate whitespace-nowrap overflow-hidden">{eventInfo.event.title}</p>
+                    {/* <p className="text-red-500 text-xs break-words whitespace-norma">{eventInfo.event.extendedProps.time}</p> */}
+                    {status && (
+                        <span className={`inline-block  mt-1 px-2 py-0.5 text-white text-[10px] rounded ${badgeColor}`}>
+                            {status}
+                        </span>
+                    )}
+                </div>
+            </TooltipTrigger>
+            <TooltipContent className='bg-white border border-teal-500 '>
+                    <div className=" space-y-3 text-sm text-gray-500">
+                        <div className="grid grid-cols-2 gap-y-2">
+                            <p className="font-semibold">Patient Name:</p>
+                            <p>{eventInfo.event.title}</p>
+
+                            <p className="font-semibold">Date of Appointment:</p>
+                            <p>{eventInfo.event.start?.toLocaleString() || "No Date"}</p>
+
+                            <p className="font-semibold">Diagnosis:</p>
+                            <p>{eventInfo.event.extendedProps.diagnosis}</p>
+                            <p className='font-semibold'>Click to get more info...</p>
+                    
+                        </div> 
+                    </div>
+            </TooltipContent>
+        </Tooltip>
     );
 };
-
 export default MyCalendar

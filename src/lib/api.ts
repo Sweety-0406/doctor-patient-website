@@ -46,11 +46,11 @@ export const updateAppointmentsByDoctor = (id: string, status: string) =>
     body: JSON.stringify({ status }),
   });
 
-export const rescheduleAppointment = (id: string,date:string, time: string) =>
+export const rescheduleAppointment = (id: string,date:string, time: string, status?:string) =>
   fetch(`${API_BASE}/appointments/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({date, time}),
+    body: JSON.stringify({date, time, status}),
   });
 
 export const doctorChangePassword = (doctorId: string, newPassword: string) =>

@@ -1,4 +1,4 @@
-export type AppointmentStatus = 'approved' | 'pending' | 'completed' | 'rejected' | 'cancelled';
+export type AppointmentStatus = 'approved' | 'pending' | 'completed' | 'rejected' | 'cancelled' | 'reschedule';
 
 export type Appointment = {
   id: string;
@@ -17,7 +17,7 @@ export type Appointment = {
   date: string;  
   time: string; 
   payment: string;
-  status: "approved" | "pending"  | "rejected" | "cancelled" | "completed" | string;
+  status: "approved" | "pending"  | "rejected" | "cancelled" | "completed" | "reschedule" | string;
   rating: number
   reason?:string
 };
