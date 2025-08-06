@@ -36,7 +36,7 @@ export default function HelpAndSupportPage() {
   return (
     <div className="flex flex-col h-screen bg-gray-50">
       {/* Header */}
-      <div className="flex bg-teal-500 items-center p-4 border-b bg-whit">
+      <div className="flex lg:px-[5%] bg-teal-500 items-center p-4 border-b bg-whit">
         <button onClick={() => router.back()} className="text-white cursor-pointer text-xl md:text-2xl">
           <FaArrowLeft />
         </button>

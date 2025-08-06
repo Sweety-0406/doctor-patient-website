@@ -70,7 +70,7 @@ export default function PatientProfilePage() {
 
   return (
     <div className="max-h-screen px-auto  min-h-screen    bg-gray-100">
-      <div className="p-6 w-full h-[90vh] overflow-y-scroll ">
+      <div className="p-6 lg:px-[5%] w-full h-[90vh] overflow-y-scroll ">
         <div className="flex items-center space-x-3 mb-6">
         <h1 className="text-2xl font-bold">Patient Profile</h1>
         </div>
@@ -145,7 +145,7 @@ export default function PatientProfilePage() {
               </div>
             </div>
         </div> 
-        <div className="transform transition-transform duration-300 hover:scale-105 text-teal-500 bg-white mt-8 flex justify-between shadow-lg rounded-xl p-6">
+        <div onClick={()=>router.push("/patient/notificationPage")} className="transform transition-transform duration-300 hover:scale-105 text-teal-500 cursor-pointer bg-white mt-8 flex justify-between shadow-lg rounded-xl p-6">
           <div className="flex gap-4 "><span className="mt-[6px]"><MdNotificationsActive /></span>Notification</div>
           <div><MdOutlineKeyboardArrowRight className="size-7" /></div>
         </div>

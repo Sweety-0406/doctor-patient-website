@@ -83,6 +83,7 @@ export type PatientSignup = {
 }
 
 export interface Prescription {
+  doctorId:string;
   appointmentId: string;
   patientName: string;
   createdAt: string;

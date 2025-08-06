@@ -94,6 +94,7 @@ export default function AppointmentsPage() {
     
     const payload = {
       ...data,
+      doctorId:selectedAppointmentForPrescription.doctorId,
       appointmentId: selectedAppointmentForPrescription.id,
       patientName: selectedAppointmentForPrescription.patient,
       createdAt: new Date().toISOString(),

@@ -131,9 +131,11 @@ export const addRating = (id: string, star: number) =>
   });
 
 
+
+
   //PRESCRIPTIONS_API
-export const getPrescriptions= () =>
-  fetch(`${API_BASE}/prescriptions`).then(res => res.json());
+export const getPrescriptions = (doctorId: string) =>
+  fetch(`${API_BASE}/prescriptions?patientId=${doctorId}`).then(res => res.json());
 
 export const deletePrescription=(id:string)=>
   fetch(`${API_BASE}/prescriptions/${id}`, {

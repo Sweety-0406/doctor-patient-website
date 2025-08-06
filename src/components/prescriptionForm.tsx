@@ -119,7 +119,7 @@ export default function PrescriptionForm({ onSubmit, defaultValues }: Prescripti
           )}
         />
         <div className="flex justify-end gap-4 pt-2">
-          <Button type="submit" className="bg-teal-500 hover:bg-teal-600 text-white">
+          <Button type="submit" className="bg-teal-500 cursor-pointer hover:bg-teal-600 text-white">
             {defaultValues ? "Update Prescription" : "Add Prescription"}
           </Button>
         </div>

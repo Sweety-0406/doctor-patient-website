@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -19,6 +20,9 @@ import toast from "react-hot-toast";
 import { Input } from "@/components/ui/input";
 import { MdDeleteSweep } from "react-icons/md";
 import { MdEditNote } from "react-icons/md";
+import { useDoctorAuth } from "@/context/authContext";
+import { useRouter } from "next/navigation";
+import { IoSearchOutline } from "react-icons/io5";
 
 
 interface Prescription {
@@ -43,9 +47,25 @@ export default function PrescriptionsPage() {
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const perPage = 10;
+  const { doctor, loading } = useDoctorAuth();
+  const router = useRouter();
 
+  useEffect(() => {
+    if (!loading && doctor) {
+      fetchPrescriptions();
+    } else if (!loading && !doctor) {
+      router.push('/doctor/login');
+    }
+  }, [loading, doctor]);
+
+  if(loading){
+    return(
+      <div>loading</div>
+    )
+  }
   const fetchPrescriptions = async () => {
-    const res = await getPrescriptions();
+    if(!doctor) return
+    const res = await getPrescriptions(doctor.id);
     setPrescriptions(res);
   };
 
@@ -65,7 +85,8 @@ export default function PrescriptionsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    await deleteAPI(id);
+    const res = await deleteAPI(id);
+    console.log(res)
     fetchPrescriptions();
     setConfirmDelete(null);
     toast.success("Prescription deleted.");
@@ -82,9 +103,9 @@ export default function PrescriptionsPage() {
     );
   };
 
-  useEffect(() => {
-    fetchPrescriptions();
-  }, []);
+  // useEffect(() => {
+  //   fetchPrescriptions();
+  // }, []);
 
   // Search + Pagination
   const filteredPrescriptions = prescriptions.filter(
@@ -116,28 +137,31 @@ export default function PrescriptionsPage() {
       </div>
 
       {/* Search Bar */}
-      <div className="flex gap-4 mb-4">
-        <Input
+      <div className="relative mb-4 mt-8 px- lg:px-1">
+        <input
           type="text"
-          placeholder="Search by Patient or Medicine"
           value={search}
+          placeholder="Search by Patient or Medicine"
           onChange={(e) => setSearch(e.target.value)}
-          className="border p-2 rounded w-full"
+          className="w-full text-gray-500 px-4 pl-20 py-3 bg-gray-100  rounded-lg shadow-sm text-sm focus:border focus:outline-none focus:border-teal-400"
         />
+        <span className="absolute left-10 top-3 text-gray-400">
+          <IoSearchOutline className="size-5" />
+        </span>
       </div>
 
       {/* Prescription List */}
-      <div className="bg-white p-4 rounded-xl shadow my-6 ">
+      <div className=" my-6  ">
         {pageData.length === 0 ? (
           <p>No prescriptions found.</p>
         ) : (
           pageData.map(([patientName, items]: [string, Prescription[]]) => (
-            <div key={patientName} className="mb-4 border-b border-teal-500 pb-2">
+            <div key={patientName} className="mb-4 bg-white transition  hover:scale-102 p-4 rounded-xl shadow border-b border-teal-500 pb-2">
               <div
-                className="flex justify-between items-center cursor-pointer"
+                className="flex justify-between items-center  cursor-pointer"
                 onClick={() => togglePatientExpand(patientName)}
               >
-                <h2 className="font-semibol text-gray-500 text-lg">{patientName}</h2>
+                <h2 className="font-semibol text-teal-500 text-lg">{patientName}</h2>
                 {expandedPatients.includes(patientName) ? (
                   <FaChevronUp className="text-gray-500"/>
                 ) : (
@@ -193,7 +217,7 @@ export default function PrescriptionsPage() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex justify-center mt-4 gap-4">
+          <div className="flex justify-center mt-4 gap-4 ">
             <Button
               variant="teal"
               disabled={page === 1}
@@ -242,11 +266,16 @@ export default function PrescriptionsPage() {
             Are you sure you want to delete this prescription? This action cannot be undone.
           </p>
           <div className="flex justify-end gap-4">
-            <Button variant="outline" onClick={() => setConfirmDelete(null)}>
+            <Button 
+              variant="outline" 
+              className="cursor-pointer"
+              onClick={() => setConfirmDelete(null)}
+            >
               Cancel
             </Button>
             <Button
               variant="destructive"
+              className="cursor-pointer"
               onClick={() => handleDelete(confirmDelete!)}
             >
               Yes, Delete
