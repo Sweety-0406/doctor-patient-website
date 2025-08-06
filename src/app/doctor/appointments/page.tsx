@@ -1,7 +1,7 @@
 "use client";
 import { Appointment, AppointmentStatus } from "@/app/types";
 import { useDoctorAuth } from "@/context/authContext";
-import { getDoctorAppointments, rescheduleAppointment, updateAppointmentsByDoctor } from "@/lib/api";
+import { createPrescription, getDoctorAppointments, rescheduleAppointment, updateAppointmentsByDoctor } from "@/lib/api";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
@@ -14,12 +14,15 @@ import {
 } from "@/components/ui/dialog";
 import toast from "react-hot-toast";
 import { generateHalfHourSlots } from "@/lib/utils";
+import PrescriptionForm, { PrescriptionFormValues } from "@/components/prescriptionForm";
 
 export default function AppointmentsPage() {
   const router = useRouter();
   const [selectedAppointment,setSelectedAppointment] = useState<Appointment | null>(null)
   const [showRescheduleModal,setShowRescheduleModal] = useState(false)
   const [openDialogId, setOpenDialogId] = useState<string | null>(null);
+  const [showPrescriptionModal, setShowPrescriptionModal] = useState(false);
+  const [selectedAppointmentForPrescription, setSelectedAppointmentForPrescription] = useState<Appointment | null>(null);
 
   const [newDate, setNewDate] = useState( "");
   const [newTime, setNewTime] = useState("");
@@ -82,12 +85,47 @@ export default function AppointmentsPage() {
       toast.error("Failed to reschedule the appointment.")
     }
   }
+  const handleGivePrescription = (appt: Appointment) => {
+    setSelectedAppointmentForPrescription(appt);
+    setShowPrescriptionModal(true);
+  };
+  const handlePrescriptionSubmit = async (data: PrescriptionFormValues) => {
+    if (!selectedAppointmentForPrescription) return;
+    
+    const payload = {
+      ...data,
+      appointmentId: selectedAppointmentForPrescription.id,
+      patientName: selectedAppointmentForPrescription.patient,
+      createdAt: new Date().toISOString(),
+    };
+
+    const res = await createPrescription(payload);
+    if(res.ok){
+      toast.success("Prescription added successfully!");
+    }else{
+      toast.error("Failed to add prescription!");
+    }
+    setShowPrescriptionModal(false);
+    setSelectedAppointmentForPrescription(null);
+  };
+
+
 
   if (loading || !doctor)
     return <p className="text-center mt-10 text-lg">Loading...</p>;
 
   return (
     <div className="p-6 max-h-screen pt-24 lg:pt-4 overflow-y-scroll bg-gray-50 min-h-screen">
+      {showPrescriptionModal && (
+        <Dialog open={true} onOpenChange={setShowPrescriptionModal}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader className="text-teal-500">
+              <DialogTitle className="text-xl">Add Prescription</DialogTitle>
+            </DialogHeader>
+            <PrescriptionForm onSubmit={handlePrescriptionSubmit} />
+          </DialogContent>
+        </Dialog>
+      )}
       {showRescheduleModal && selectedAppointment && (
           <Dialog  open={true} onOpenChange={setShowRescheduleModal}>
             <DialogContent >
@@ -271,7 +309,12 @@ export default function AppointmentsPage() {
                         {appt.status === "cancelled" ? (
                           appt.reason || "No reason provided"
                         ) : appt.status === "completed" ? (
-                          "No Action"
+                          <button
+                            onClick={() => handleGivePrescription(appt)}
+                            className="text-sm cursor-pointer bg-teal-500 hover:bg-teal-600 text-white px-3 py-1 rounded"
+                          >
+                             Prescription
+                          </button>
                         ) : (
                           <button
                             onClick={() => {

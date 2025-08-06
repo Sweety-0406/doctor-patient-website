@@ -64,7 +64,7 @@ export default function DoctorProfilePage() {
           <div className="bg-white transform transition-transform duration-300 hover:scale-105 shadow-lg rounded-xl p-6 flex flex-col items-center">
             <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-teal-500 mb-4">
               <Image
-                src={doctor.image}
+                src={doctor.image || "/images/patient.png"}
                 alt={doctor.name}
                 width={160}
                 height={160}
@@ -138,13 +138,13 @@ export default function DoctorProfilePage() {
               <ProfileDetail label="Specialization" value={doctor.specialization} />
               <ProfileDetail label="Qualification" value={doctor.qualification} />
               <ProfileDetail label="Available Today" value={doctor.availableToday ? "Yes" : "No"} />
-              <ProfileDetail label="Earliest Available" value={formatDate(doctor.earliestAvailable)} />
+              <ProfileDetail label="Earliest Available" value={(doctor.earliestAvailable)} />
               <ProfileDetail label="Working Hours" value={doctor.timing} />
-              <ProfileDetail label="Available On" value={doctor.available.join(", ")} />
+              <ProfileDetail label="Available On" value={doctor?.available?.join(", ") || ""} />
             </div>
 
             <div className="mt-6">
-              <p className="font-semibold text-gray-300 mb-2">Specialties:</p>
+              <p className="font-semibold text-gray-400 mb-2">Specialties:</p>
               <div className="flex flex-wrap gap-2">
                 {doctor.specialties?.map((s, i) => (
                   <span key={i} className="px-3 py-1 bg-teal-500 text-xs rounded-full">
@@ -173,14 +173,4 @@ function ProfileDetail({ label, value }: { label: string; value: string | boolea
   );
 }
 
-function formatDate(dateString: string) {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    weekday: "short",
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
+

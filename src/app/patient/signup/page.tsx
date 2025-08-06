@@ -54,9 +54,9 @@ export default function PatientSignupPage() {
 
       {/* Right Signup Form */}
       <div className="w-full md:pr-10 md:w-1/2 rounded-r-lg md:bg-gray-50 flex items-center justify-center">
-        <div className="w-full max-w-md bg-white p-10 rounded shadow">
+        <div className="w-full max-w-md bg-white p-10 md:p-4 rounded shadow">
           <h2 className="text-2xl  lg:text-4xl font-bold mb-6 text-center flex justify-center"><span onClick={()=>router.push("/")} className="font-bold mt-[6px] cursor-pointer mr-1 text-teal-500"><LuStethoscope /></span> Signup</h2>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
             {/* Name */}
             <div>
               <label className="text-teal-500 font-semibold text-lg" htmlFor="name">Name</label>
@@ -99,7 +99,7 @@ export default function PatientSignupPage() {
               {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>}
             </div>
 
-            {/* Specialization */}
+            {/* Location */}
             <div>
               <label className="text-teal-500 font-semibold text-lg" htmlFor="age">Location</label>
               <input

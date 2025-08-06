@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { IoIosArrowDropright } from "react-icons/io";
 import { FaArrowLeft, FaCalendarAlt } from "react-icons/fa";
 import { Doctor } from "@/app/types";
+import { getNextAvailableSlot } from "@/lib/utils";
 
 export default function BookingPage() {
   const { id } = useParams(); 
@@ -23,6 +24,11 @@ export default function BookingPage() {
 
   if (!doc) return <div>Loading...</div>;
 
+  const nextAvailable = getNextAvailableSlot({
+    available: doc.available,
+    startTime: doc.startTime,
+    endTime: doc.endTime
+  });
   return (
     <div className="relative min-h-screen">
       {/* Header Background */}
@@ -39,7 +45,7 @@ export default function BookingPage() {
           {/* Doctor Card */}
           <div className="bg-white mx-[5%] lg:mx-[10%] shadow rounded-2xl p-4 flex  gap-4 items-center">
             <img
-              src={doc.image}
+              src={doc.image || "/images/doc.png"}
               alt={doc.name}
               className="rounded-xl w-[100px] h-[100px] md:w-[120px] md:h-[120px] object-cover"
             />
@@ -72,7 +78,7 @@ export default function BookingPage() {
                 {doc.specialties.map((speciality: string) => (
                   <span
                     key={speciality}
-                    className="px-3 py-1 text-sm border border-teal-500 font-semibold rounded-full"
+                    className="px-3 py-1 text-sm border border-teal-500 bg-teal-50 font-semibold rounded-full"
                   >
                     {speciality}
                   </span>
@@ -89,11 +95,16 @@ export default function BookingPage() {
             {/* Availability */}
             <div>
               <h3 className="font-semibold text-base mb-1">Availability For Consulting</h3>
-              {doc.available.map((data: string, idx: number) => (
-                <p key={idx} className="text-gray-600 text-sm">
-                  {data}
-                </p>
-              ))}
+              <div className="flex flex-wrap gap-2">
+                {doc.available.map((day: string) => (
+                  <span
+                    key={day}
+                    className="px-3 w-16 text-center py-1 text-sm border border-teal-500 bg-teal-50  font-semibold rounded-full"
+                  >
+                    {day}
+                  </span>
+                ))}
+              </div>
             </div>
 
             {/* Appointment Info */}
@@ -102,7 +113,7 @@ export default function BookingPage() {
               <div className="flex justify-between w-full bg-white p-2 rounded-md items-center">
                 <div>
                   <p className="text-xs text-teal-500">Earliest Available Appointment</p>
-                  <p className="text-sm font-medium">10 Oct, 2023 | 11:30 AM</p>
+                  <p className="text-sm font-medium">{nextAvailable.date} | {nextAvailable.slot}</p>
                 </div>
                 <IoIosArrowDropright className="text-gray-400 text-xl" />
               </div>

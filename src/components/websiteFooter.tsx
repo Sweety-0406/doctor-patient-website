@@ -8,7 +8,7 @@ export default function WebsiteFooter() {
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-5 gap-8">
         {/* Column 1 */}
         <div>
-          <h3 className="font-bold mb-3">Practo</h3>
+          <h3 className="font-bold mb-3">Doc-Center</h3>
           <ul className="space-y-2">
             <li><a href="#" className="hover:underline">About</a></li>
             <li><a href="#" className="hover:underline">Blog</a></li>
@@ -25,12 +25,12 @@ export default function WebsiteFooter() {
             <li><a href="#">Search for doctors</a></li>
             <li><a href="#">Search for clinics</a></li>
             <li><a href="#">Search for hospitals</a></li>
-            <li><a href="#">Practo Plus</a></li>
+            <li><a href="#">Doc-Center Plus</a></li>
             <li><a href="#">Covid Hospital listing</a></li>
-            <li><a href="#">Practo Care Clinics</a></li>
+            <li><a href="#">Doc-Center Care Clinics</a></li>
             <li><a href="#">Read health articles</a></li>
             <li><a href="#">Read about medicines</a></li>
-            <li><a href="#">Practo drive</a></li>
+            <li><a href="#">Doc-Center drive</a></li>
             <li><a href="#">Health app</a></li>
           </ul>
         </div>
@@ -39,14 +39,14 @@ export default function WebsiteFooter() {
         <div>
           <h3 className="font-bold mb-3">For doctors</h3>
           <ul className="space-y-2">
-            <li><a href="#">Practo Profile</a></li>
+            <li><a href="#">Doc-Center Profile</a></li>
           </ul>
           <h3 className="font-bold mt-6 mb-3">For clinics</h3>
           <ul className="space-y-2">
-            <li><a href="#">Ray by Practo</a></li>
-            <li><a href="#">Practo Reach</a></li>
+            <li><a href="#">Ray by Doc-Center</a></li>
+            <li><a href="#">Doc-Center Reach</a></li>
             <li><a href="#">Ray Tab</a></li>
-            <li><a href="#">Practo Pro</a></li>
+            <li><a href="#">Doc-Center Pro</a></li>
           </ul>
         </div>
 
@@ -54,11 +54,11 @@ export default function WebsiteFooter() {
         <div>
           <h3 className="font-bold mb-3">For hospitals</h3>
           <ul className="space-y-2">
-            <li><a href="#">Insta by Practo</a></li>
-            <li><a href="#">Qikwell by Practo</a></li>
-            <li><a href="#">Practo Profile</a></li>
-            <li><a href="#">Practo Reach</a></li>
-            <li><a href="#">Practo Drive</a></li>
+            <li><a href="#">Insta by Doc-Center</a></li>
+            <li><a href="#">Qikwell by Doc-Center</a></li>
+            <li><a href="#">Doc-Center Profile</a></li>
+            <li><a href="#">Doc-Center Reach</a></li>
+            <li><a href="#">Doc-Center Drive</a></li>
           </ul>
         </div>
 
@@ -74,9 +74,9 @@ export default function WebsiteFooter() {
       {/* Bottom Section */}
       <div className="mt-10 text-center text-gray-300">
         <h1 className="text-3xl font-bold text-white">
-          <span className="text-[#3ED6FF]">•</span>practo<span className="text-[#3ED6FF]">•</span>
+          <span className="text-[#3ED6FF]">•</span>Doc-Center<span className="text-[#3ED6FF]">•</span>
         </h1>
-        <p className="text-sm mt-2">Copyright © 2017, Practo. All rights reserved.</p>
+        <p className="text-sm mt-2">Copyright © 2017, Doc-Center. All rights reserved.</p>
       </div>
     </footer>
   );

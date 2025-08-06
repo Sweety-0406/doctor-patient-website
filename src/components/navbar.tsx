@@ -23,7 +23,7 @@ const Navbar = ()=>{
                 <nav className="flex justify-between gap-4 ml-4 mt-1  ">
                     <Tooltip>
                         <TooltipTrigger>
-                            <Link href="/doctor/dashboard" className={`text-gray-700  hover:text-lg ${pathname.includes('doctor/dashboard') && "rounded bg-teal-100 px-1 font-semibold text-lg"} hover:bg-teal-100 rounded px-1`}>🏠 </Link>
+                            <Link href="/doctor/dashboard" className={`text-gray-700 py-1 hover:text-lg ${pathname.includes('doctor/dashboard') && "rounded bg-teal-100 px-1 font-semibold text-lg"} hover:bg-teal-100 rounded px-1`}>🏠 </Link>
                         </TooltipTrigger>
                         <TooltipContent>
                             <p>Dashboard</p>
@@ -31,7 +31,7 @@ const Navbar = ()=>{
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger>
-                            <Link href="/doctor/appointments" className={`text-gray-700  hover:text-lg ${pathname.includes('doctor/appointments') && "rounded bg-teal-100 px-1 font-semibold text-lg"} hover:bg-teal-100 rounded px-1`}>📅 </Link>
+                            <Link href="/doctor/appointments" className={`text-gray-700 py-1 hover:text-lg ${pathname.includes('doctor/appointments') && "rounded bg-teal-100 px-1 font-semibold text-lg"} hover:bg-teal-100 rounded px-1`}>📅 </Link>
                         </TooltipTrigger>
                         <TooltipContent>
                             <p>Appointment</p>
@@ -39,7 +39,7 @@ const Navbar = ()=>{
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger>
-                            <Link href="/doctor/patients" className={`text-gray-700  hover:text-lg ${pathname.includes('doctor/patients') && "rounded bg-teal-100 px-1 font-semibold text-lg"} hover:bg-teal-100 rounded px-1`}>👥 </Link>
+                            <Link href="/doctor/patients" className={`text-gray-700 py-1 hover:text-lg ${pathname.includes('doctor/patients') && "rounded bg-teal-100 px-1 font-semibold text-lg"} hover:bg-teal-100 rounded px-1`}>👥 </Link>
                         </TooltipTrigger>
                         <TooltipContent>
                             <p>Patients</p>
@@ -47,7 +47,15 @@ const Navbar = ()=>{
                     </Tooltip>
                     <Tooltip>
                         <TooltipTrigger>
-                            <Link href="/doctor/profile" className={`text-gray-700  hover:text-lg ${pathname.includes('doctor/profile') && "rounded bg-teal-100 px-1 font-semibold text-lg"} hover:bg-teal-100 rounded px-1`}>🩺 </Link>
+                            <Link href="/doctor/prescriptions" className={`text-gray-700 py-1 hover:text-lg ${pathname.includes('doctor/prescriptions') && "rounded bg-teal-100 px-1 font-semibold text-lg"} hover:bg-teal-100 rounded px-1`}>📝 </Link>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <p>Prescriptions</p>
+                        </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                        <TooltipTrigger>
+                            <Link href="/doctor/profile" className={`text-gray-700 py-1 hover:text-lg ${pathname.includes('doctor/profile') && "rounded bg-teal-100 px-1 font-semibold text-lg"} hover:bg-teal-100 rounded px-1`}>🩺 </Link>
                         </TooltipTrigger>
                         <TooltipContent>
                             <p>Profile</p>

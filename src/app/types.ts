@@ -35,6 +35,8 @@ export type Doctor = {
   description: string;
   specialties: string[];
   timing: string;
+  startTime: string;
+  endTime: string;
   earliestAvailable: string; 
   available: string[];
   user: "doctor" | string;
@@ -60,9 +62,17 @@ export type DoctoSignup = {
   email: string;
   password: string;
   specialization: string;
-  user: string,
-  
-}
+  qualification: string;
+  specialties: string[];
+  phone: string;
+  fees: string;
+  timing: string;
+  earliestAvailable: string;
+  available: string[];
+  description: string;
+  startTime: string;
+  endTime: string;
+};
 
 export type PatientSignup = {
   name: string;
@@ -72,5 +82,13 @@ export type PatientSignup = {
   user: string
 }
 
-
+export interface Prescription {
+  appointmentId: string;
+  patientName: string;
+  createdAt: string;
+  medicineName: string;
+  dosage: string;
+  duration: string;
+  notes?: string;
+}
 

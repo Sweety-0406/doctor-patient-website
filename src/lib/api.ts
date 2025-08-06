@@ -1,8 +1,8 @@
 
-import { Appointment, DoctoSignup, PatientSignup } from "@/app/types";
+import { Appointment, DoctoSignup, PatientSignup, Prescription } from "@/app/types";
 
-// export const API_BASE ="http://localhost:3001"
-export const API_BASE =process.env.NEXT_PUBLIC_BASE_API
+export const API_BASE ="http://localhost:3001"
+// export const API_BASE =process.env.NEXT_PUBLIC_BASE_API
 
 
 
@@ -128,4 +128,29 @@ export const addRating = (id: string, star: number) =>
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ rating: star }),
+  });
+
+
+  //PRESCRIPTIONS_API
+export const getPrescriptions= () =>
+  fetch(`${API_BASE}/prescriptions`).then(res => res.json());
+
+export const deletePrescription=(id:string)=>
+  fetch(`${API_BASE}/prescriptions/${id}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+  });
+
+export const updatePrescription=(id:string, medicineName:string, dosage:string,duration: string, notes?:string)=>
+  fetch(`${API_BASE}/prescriptions/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ medicineName,dosage,duration,notes}),
+  });
+
+export const createPrescription=(data:Prescription)=>
+  fetch(`${API_BASE}/prescriptions`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
   });

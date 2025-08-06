@@ -4,17 +4,18 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { FiHeart } from "react-icons/fi";
 import { FaStar } from "react-icons/fa";
+import { isDoctorAvailableToday } from "@/lib/utils";
 
 type dataType = {
   id: string;
   name: string;
   specialization: string;
-  availableToday: boolean;
   image: string;
   description: string;
   timing: string;
   rating?: number;
   fees: number
+  available:string[]
 };
 
 export default function DoctorCard({
@@ -24,12 +25,13 @@ export default function DoctorCard({
   timing,
   description,
   image,
-  availableToday,
   rating = 3.5, 
-  fees = 500
+  fees = 500,
+  available
 }: dataType) {
   const [isFav, setIsFav] = useState(false);
   const router = useRouter();
+  const availableToday = isDoctorAvailableToday(available);
 
   const onClickHandler = (
     e: React.MouseEvent<HTMLDivElement | SVGElement>
@@ -53,7 +55,7 @@ export default function DoctorCard({
       <div className="relative h-28 w-full bg-gradient-to-t from-white to-teal-500">
         <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 w-20 h-20 rounded-full overflow-hidden border-4 border-white">
           <Image
-            src={image}
+            src={image || "/images/doc.png"}
             alt={name}
             fill
             className="object-cover"

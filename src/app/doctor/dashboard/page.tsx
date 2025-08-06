@@ -54,7 +54,7 @@ export default function DoctorDashboard() {
               className="w-12 h-12 cursor-pointer rounded-full overflow-hidden border border-teal-500"
             >
               <Image
-                src={doctor.image}
+                src={doctor.image || "/images/patient.png"}
                 alt={doctor.name}
                 width={80}
                 height={80}
