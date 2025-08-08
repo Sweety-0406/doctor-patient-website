@@ -1,8 +1,8 @@
 
 import { Appointment, DoctoSignup, PatientSignup, Prescription } from "@/app/types";
 
-// export const API_BASE ="http://localhost:3001"
-export const API_BASE =process.env.NEXT_PUBLIC_BASE_API
+export const API_BASE ="http://localhost:3001"
+// export const API_BASE =process.env.NEXT_PUBLIC_BASE_API
 
 
 
@@ -10,7 +10,7 @@ export const API_BASE =process.env.NEXT_PUBLIC_BASE_API
 export const getDoctors = () =>
   fetch(`${API_BASE}/doctors`).then(res => res.json());
 
-export const getDoctorById = (id: number) =>
+export const getDoctorById = (id: string) =>
   fetch(`${API_BASE}/doctors/${id}`).then(res => res.json());
 
 export const getDoctorByEmail = (email: string) =>
@@ -135,24 +135,79 @@ export const addRating = (id: string, star: number) =>
 
   //PRESCRIPTIONS_API
 export const getPrescriptions = (doctorId: string) =>
-  fetch(`${API_BASE}/prescriptions?patientId=${doctorId}`).then(res => res.json());
+  fetch(`${API_BASE}/prescriptions?doctorId=${doctorId}`).then(res => res.json());
 
-export const deletePrescription=(id:string)=>
-  fetch(`${API_BASE}/prescriptions/${id}`, {
+export const deletePrescription= async (id:string, appointmentId:string)=>{
+  const res = await fetch(`${API_BASE}/prescriptions/${id}`, {
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
   });
+    if (!res.ok) {
+    throw new Error("Failed to create prescription");
+  }
 
-export const updatePrescription=(id:string, medicineName:string, dosage:string,duration: string, notes?:string)=>
-  fetch(`${API_BASE}/prescriptions/${id}`, {
+  // Step 2: Update the appointment if appointmentId is present
+  if (appointmentId) {
+    const appointmentRes = await fetch(`${API_BASE}/appointments/${appointmentId}`, {
+      method: "PATCH", 
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isPrescriptionAvailable: false }),
+    });
+
+    if (!appointmentRes.ok) {
+      throw new Error("Prescription created, but failed to update appointment");
+    }
+  }
+
+  return res;
+}
+
+
+
+type updatePrescriptionType = {
+  id:string;
+  medicines: {
+    medicineName: string;
+    dosage: string;
+    duration: string;
+    notes?: string | undefined;
+  }[];
+}
+  
+export const updatePrescription=(data: updatePrescriptionType)=>
+  fetch(`${API_BASE}/prescriptions/${data.id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ medicineName,dosage,duration,notes}),
+    body: JSON.stringify({ medicines: data.medicines}),
   });
 
-export const createPrescription=(data:Prescription)=>
-  fetch(`${API_BASE}/prescriptions`, {
+export const createPrescription = async (data: Prescription) => {
+  // Step 1: Create the prescription
+  const prescriptionRes = await fetch(`${API_BASE}/prescriptions`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
+
+  if (!prescriptionRes.ok) {
+    throw new Error("Failed to create prescription");
+  }
+
+  // Step 2: Update the appointment if appointmentId is present
+  if (data.appointmentId) {
+    const appointmentRes = await fetch(`${API_BASE}/appointments/${data.appointmentId}`, {
+      method: "PATCH", 
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isPrescriptionAvailable: true }),
+    });
+
+    if (!appointmentRes.ok) {
+      throw new Error("Prescription created, but failed to update appointment");
+    }
+  }
+
+  return prescriptionRes;
+};
+
+export const getPrescriptionsByPatient = (appointmentId: string) =>
+  fetch(`${API_BASE}/prescriptions?appointmentId=${appointmentId}`).then(res => res.json());

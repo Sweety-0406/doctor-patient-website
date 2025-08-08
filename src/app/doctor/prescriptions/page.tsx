@@ -2,260 +2,154 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
-import {
-  getPrescriptions,
-  updatePrescription,
-  deletePrescription as deleteAPI,
-} from "@/lib/api";
-import PrescriptionForm, { PrescriptionFormValues } from "@/components/prescriptionForm";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import toast from "react-hot-toast";
-import { Input } from "@/components/ui/input";
-import { MdDeleteSweep } from "react-icons/md";
-import { MdEditNote } from "react-icons/md";
 import { useDoctorAuth } from "@/context/authContext";
 import { useRouter } from "next/navigation";
-import { IoSearchOutline } from "react-icons/io5";
+import PrescriptionSidebar from "@/components/prescriptionSidebar";
+import PatientDetails from "@/components/patientDetails";
+import PrescriptionList from "@/components/prescriptionList";
+import { getPrescriptions, deletePrescription, updatePrescription } from "@/lib/api";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import toast from "react-hot-toast";
+import PrescriptionForm, { PrescriptionFormValues } from "@/components/prescriptionForm";
+import { Button } from "@/components/ui/button";
 
-
-interface Prescription {
+interface FullPrescription {
   id: string;
-  patientName: string;
-  medicineName: string;
-  dosage: string;
-  duration: string;
-  notes?: string;
+  diagnosis: string;
+  gender: string;
+  age: string;
+  phone: string;
+  address: string;
+  blood: string;
+  date: string;
+  time: string;
   appointmentId: string;
+  patientName: string;
+  patientImage: string;
+  doctorId: string;
+  doctorImage: string;
   createdAt: string;
+  medicines: {
+    medicineName: string;
+    dosage: string;
+    duration: string;
+    notes?: string;
+  }[];
+  patientId: string;
 }
 
-type GroupedPrescriptions = Record<string, Prescription[]>;
-
-export default function PrescriptionsPage() {
-  const [prescriptions, setPrescriptions] = useState<Prescription[]>([]);
-  const [editing, setEditing] = useState<Prescription | null>(null);
-  const [search, setSearch] = useState("");
-  const [expandedPatients, setExpandedPatients] = useState<string[]>([]);
-  const [page, setPage] = useState(1);
-  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
-  const [open, setOpen] = useState(false);
-  const perPage = 10;
+export default function PrescriptionPage() {
   const { doctor, loading } = useDoctorAuth();
   const router = useRouter();
+  const [allPrescriptions, setAllPrescriptions] = useState<FullPrescription[]>([]);
+  const [selectedPrescriptionId, setSelectedPrescriptionId] = useState<string | null>(null);
+  const [editing, setEditing] = useState<FullPrescription | null>(null);
+  const [open, setOpen] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+
 
   useEffect(() => {
-    if (!loading && doctor) {
-      fetchPrescriptions();
-    } else if (!loading && !doctor) {
-      router.push('/doctor/login');
-    }
+    if (!loading && doctor) fetchData();
+    else if (!loading && !doctor) router.push("/doctor/login");
   }, [loading, doctor]);
 
-  if(loading){
-    return(
-      <div>loading</div>
-    )
-  }
-  const fetchPrescriptions = async () => {
-    if(!doctor) return
+  const fetchData = async () => {
+    if (!doctor) return;
     const res = await getPrescriptions(doctor.id);
-    setPrescriptions(res);
+    setAllPrescriptions(res);
+    if (res.length > 0) setSelectedPrescriptionId(res[0].id);
   };
 
   const handleUpdate = async (data: PrescriptionFormValues) => {
-    if (editing) {
-      console.log(editing.id, data)
-      const res = await updatePrescription(editing.id, data.medicineName, data.dosage, data.duration,data.notes);
-      if (res.ok) {
-        toast.success("Prescription updated successfully.");
-      } else {
-        toast.error("Failed to update prescription.");
-      }
-      setEditing(null);
-      setOpen(false);
-      fetchPrescriptions();
+    if (!editing) return;
+    const payload = {
+      id: editing.id,
+      medicines: data.medicines
     }
+    const res = await updatePrescription(payload);
+    if(res.ok){
+      toast.success("Prescription updated successfully.")
+    }else{
+      toast.error("Failed to update prescription.");
+    }
+    setOpen(false);
+    fetchData();
   };
-
+  const deleteModel = (id:string)=>{
+    setConfirmDelete(id)
+  }
   const handleDelete = async (id: string) => {
-    const res = await deleteAPI(id);
-    console.log(res)
-    fetchPrescriptions();
-    setConfirmDelete(null);
-    toast.success("Prescription deleted.");
+    console.log(id)
+    const res = await deletePrescription(id, selectedPrescription?.appointmentId as string);
+    if(res.ok){
+      toast.success("Deleted precription successfully.")
+      setConfirmDelete(null);
+    }else{
+      toast.error("Failded to delete prescription.");
+    }
+    fetchData();
   };
 
-  const handleEdit = (item: Prescription) => {
-    setEditing(item);
+  const prescriptionList = allPrescriptions.map((p) => ({
+    prescriptionId: p.id,
+    patientName: p.patientName,
+    patientImage: p.patientImage,
+    diagnosis: p.diagnosis,
+  }));
+
+  const selectedPrescription = allPrescriptions.find((p) => p.id === selectedPrescriptionId);
+
+  const handleEdit = () => {
+    if(!selectedPrescription) return null
+    setEditing(selectedPrescription);
     setOpen(true);
   };
 
-  const togglePatientExpand = (name: string) => {
-    setExpandedPatients((prev) =>
-      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
-    );
-  };
+  const selectedMedicines =
+    selectedPrescription?.medicines.map((m, i) => ({
+      medicineName: m.medicineName,
+      dosage: m.dosage,
+      duration: m.duration,
+      notes: m.notes,
+      appointmentId: selectedPrescription.appointmentId,
+      createdAt: selectedPrescription.createdAt,
+    })) || [];
 
-  // useEffect(() => {
-  //   fetchPrescriptions();
-  // }, []);
-
-  // Search + Pagination
-  const filteredPrescriptions = prescriptions.filter(
-    (p) =>
-      p.patientName.toLowerCase().includes(search.toLowerCase()) ||
-      p.medicineName.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const grouped: GroupedPrescriptions = filteredPrescriptions.reduce(
-    (acc, curr) => {
-      if (!acc[curr.patientName]) acc[curr.patientName] = [];
-      acc[curr.patientName].push(curr);
-      return acc;
-    },
-    {} as GroupedPrescriptions
-  );
-
-
-  const pageData: [string, Prescription[]][] = Object.entries(grouped).slice(
-    (page - 1) * perPage,
-    page * perPage
-  );
-  const totalPages = Math.ceil(Object.keys(grouped).length / perPage);
+  if (loading) return <div className="p-10">Loading...</div>;
 
   return (
-    <div className="min-h-screen max-h-screen pt-24 lg:pt-4 p-6 bg-gray-50 ">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl lg:text-3xl font-bold">Manage Prescriptions</h1>
-      </div>
+    <div className="flex h-screen    overflow-hidden">
+      <PrescriptionSidebar
+        prescriptions={prescriptionList}
+        selectedId={selectedPrescriptionId}
+        onSelect={setSelectedPrescriptionId}
+      />
 
-      {/* Search Bar */}
-      <div className="relative mb-4 mt-8 px- lg:px-1">
-        <input
-          type="text"
-          value={search}
-          placeholder="Search by Patient or Medicine"
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full text-gray-500 px-4 pl-20 py-3 bg-gray-100  rounded-lg shadow-sm text-sm focus:border focus:outline-none focus:border-teal-400"
-        />
-        <span className="absolute left-10 top-3 text-gray-400">
-          <IoSearchOutline className="size-5" />
-        </span>
-      </div>
-
-      {/* Prescription List */}
-      <div className=" my-6  ">
-        {pageData.length === 0 ? (
-          <p>No prescriptions found.</p>
-        ) : (
-          pageData.map(([patientName, items]: [string, Prescription[]]) => (
-            <div key={patientName} className="mb-4 bg-white transition  hover:scale-102 p-4 rounded-xl shadow border-b border-teal-500 pb-2">
-              <div
-                className="flex justify-between items-center  cursor-pointer"
-                onClick={() => togglePatientExpand(patientName)}
-              >
-                <h2 className="font-semibol text-teal-500 text-lg">{patientName}</h2>
-                {expandedPatients.includes(patientName) ? (
-                  <FaChevronUp className="text-gray-500"/>
-                ) : (
-                  <FaChevronDown className="text-gray-500"/>
-                )}
-              </div>
-              {expandedPatients.includes(patientName) && (
-                <ul className="mt-2 space-y-3">
-                  {items.map((item: Prescription) => (
-                    <li
-                      key={item.id}
-                      className="border border-teal-500 rounded-lg p-4 shadow-sm hover:shadow-md transition  hover:scale-102 flex  md:flex-row justify-between items-start gap-4"
-                    >
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-800 mb-1">{item.medicineName}</h3>
-                        <p className="text-sm text-gray-700 mb-1">
-                          <span className="font-medium">{item.dosage}</span> | {item.duration}
-                        </p>
-                        <p className="text-gray-600 text-sm mb-2 italic">{item.notes}</p>
-                        <p className="text-xs text-gray-500">
-                          Appointment ID:{" "}
-                          <span className="font-medium text-gray-700">{item.appointmentId}</span> •{" "}
-                          {new Date(item.createdAt).toLocaleDateString()}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          Date: {new Date(item.createdAt).toLocaleDateString()}
-                        </p>
-                      </div>
-
-                      <div className="flex flex-col gap-3">
-                        <button
-                          // variant="teal"
-                          onClick={() => handleEdit(item)}
-                          className="border  flex gap-1 border-teal-500 rounded-full p-1 md:p-2 bg-teal-100 cursor-pointer hover:bg-teal-200  font-semibold"
-                        >
-                          <MdEditNote className="text-teal-500 size-4 md:size-5"/> 
-                        </button>
-                        <button
-                          // variant="destructive"
-                          onClick={() => setConfirmDelete(item.id)}
-                          className="border flex gap-1 border-red-500 rounded-full p-1 md:p-2 bg-red-100 cursor-pointer hover:bg-red-200  font-semibold"
-                        >
-                          <MdDeleteSweep className="text-red-500 size-4 md:size-5 " /> 
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          ))
-        )}
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="flex justify-center mt-4 gap-4 ">
-            <Button
-              variant="teal"
-              disabled={page === 1}
-              onClick={() => setPage(page - 1)}
-            >
-              Prev
-            </Button>
-            <span>
-              Page {page} of {totalPages}
-            </span>
-            <Button
-              variant="teal"
-              disabled={page === totalPages}
-              onClick={() => setPage(page + 1)}
-            >
-              Next
-            </Button>
-          </div>
-        )}
-      </div>
-
-      {/* Edit Dialog */}
-      {editing && (
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className="sm:max-w-lg">
-            <DialogHeader className="text-teal-500 ">
-              <DialogTitle className="text-xl">Edit Prescription</DialogTitle>
-            </DialogHeader>
-            <PrescriptionForm
-              onSubmit={handleUpdate}
-              defaultValues={editing}
+      <div className="flex-1 overflow-y-auto p-6  mt-20 lg:mt-0  bg-gray-50">
+        {selectedPrescription && (
+          <>
+            <PatientDetails
+              name={selectedPrescription.patientName}
+              image={selectedPrescription.patientImage}
+              diagnosis={selectedPrescription.diagnosis}
             />
-          </DialogContent>
-        </Dialog>
-      )}
-
-      {/* Delete Confirmation Modal */}
-      <Dialog open={!!confirmDelete} onOpenChange={() => setConfirmDelete(null)}>
+            <PrescriptionList
+              patientId = {selectedPrescription.patientId} 
+              id = {selectedPrescription.id}
+              prescriptions={selectedMedicines}
+              gender = {selectedPrescription.gender}
+              age = {selectedPrescription.age}
+              phone = {selectedPrescription.phone}
+              address = {selectedPrescription.address}
+              blood = {selectedPrescription.blood}
+              date = {selectedPrescription.date}
+              time = {selectedPrescription.time}
+              onEdit={handleEdit}
+              onDelete={deleteModel}
+            />
+          </>
+        )}
+        <Dialog open={!!confirmDelete} onOpenChange={() => setConfirmDelete(null)}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold text-red-600">
@@ -283,6 +177,19 @@ export default function PrescriptionsPage() {
           </div>
         </DialogContent>
       </Dialog>
+    {/* </div> */}
+
+        {editing && (
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Prescription</DialogTitle>
+              </DialogHeader>
+              <PrescriptionForm onSubmit={handleUpdate} defaultValues={editing} />
+            </DialogContent>
+          </Dialog>
+        )}
+      </div>
     </div>
   );
 }

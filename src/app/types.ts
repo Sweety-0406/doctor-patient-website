@@ -20,6 +20,8 @@ export type Appointment = {
   status: "approved" | "pending"  | "rejected" | "cancelled" | "completed" | "reschedule" | string;
   rating: number
   reason?:string
+  patientImage?:string
+  isPrescriptionAvailable:boolean
 };
 
 
@@ -84,12 +86,25 @@ export type PatientSignup = {
 
 export interface Prescription {
   doctorId:string;
-  appointmentId: string;
+  patientId:string;
+  diagnosis:string;
+  patientImage?:string;
+  doctorImage?:string;
   patientName: string;
+  appointmentId: string;
+  gender: string;
+  age: string;
+  phone: string;
+  address: string;
+  blood: string;
+  date: string;
+  time: string;
   createdAt: string;
-  medicineName: string;
-  dosage: string;
-  duration: string;
-  notes?: string;
+  medicines: {
+      medicineName: string;
+      dosage: string;
+      duration: string;
+      notes?: string | undefined;
+  }[];
 }
 

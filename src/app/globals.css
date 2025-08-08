@@ -168,6 +168,12 @@
   font-weight: bold;
 }
 
+@media print {
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
 
 
 @theme inline {

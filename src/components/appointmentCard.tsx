@@ -2,7 +2,8 @@
 
 import { Appointment } from "@/app/types";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { FaExclamation } from "react-icons/fa";
 import {
   Dialog,
   DialogContent,
@@ -15,7 +16,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { generateHalfHourSlots } from "@/lib/utils";
-import { rescheduleAppointment } from "@/lib/api";
+import { getPrescriptionsByPatient, rescheduleAppointment } from "@/lib/api";
 import toast from "react-hot-toast";
 
 export default function AppointmentCard({
@@ -80,8 +81,6 @@ export default function AppointmentCard({
             {(data.status == "pending" || data.status == "approved") && (
               <div onClick={()=>{
                 setShowRescheduleModal(true)
-                // setNewDate(data.date);
-                // setNewTime(data.time);
               }} className="top-1 cursor-pointer">
                 🗓️
               </div>    
@@ -103,10 +102,21 @@ export default function AppointmentCard({
                 ratingProp={data.rating}
               />
             </div>
+            
           )}
-        </div>
+        </div> 
       </div>
-
+      {isCompleted && (
+        data.isPrescriptionAvailable ? (
+          <div className="mt-4">
+            <Button onClick={() => router.push(`/patient/prescription/${data.id}`)} variant="green" className="w-full">
+              View prescription
+            </Button>
+          </div>
+        ) : (
+          <div className="mt-4 text-sm text-red-500 flex gap-1 rounded-lg px-2 "> <FaExclamation className="bg-red-100 p-1 rounded-full size-5" /> No prescription available.</div>
+        )
+      )}
       {!isCompleted && (
         <>
           <button

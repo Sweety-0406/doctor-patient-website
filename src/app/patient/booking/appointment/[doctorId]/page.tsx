@@ -7,7 +7,6 @@ import { FaArrowLeft } from "react-icons/fa";
 import toast from "react-hot-toast";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-// import "/.styles/globals.css"
 import {
   Dialog,
   DialogTrigger,
@@ -29,7 +28,7 @@ export default function BookingAppointmentPage() {
   useEffect(() => {
     if (!doctorId) return;
     const fetchData = async () => {
-      const doctor = await getDoctorById(Number(doctorId));
+      const doctor = await getDoctorById(doctorId as string);
       setDoc(doctor);
     };
     fetchData();
@@ -82,6 +81,7 @@ export default function BookingAppointmentPage() {
       payment: formData.payment,
       id: crypto.randomUUID(),
       rating: 0,
+      isPrescriptionAvailable:false
     };
 
     const res = await postAppointment(payload);

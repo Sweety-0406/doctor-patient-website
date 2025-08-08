@@ -15,7 +15,7 @@ export default function BookingPage() {
   useEffect(() => {
     if (!id) return;
     const fetchData = async () => {
-      const doctor = await getDoctorById(Number(id));
+      const doctor = await getDoctorById(id as string);
       setDoc(doctor);
     };
     fetchData();

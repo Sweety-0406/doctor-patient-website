@@ -94,12 +94,23 @@ export default function AppointmentsPage() {
     
     const payload = {
       ...data,
+      gender: selectedAppointmentForPrescription.gender,
+      age: selectedAppointmentForPrescription.age,
+      phone: selectedAppointmentForPrescription.phone,
+      address: selectedAppointmentForPrescription.address,
+      blood: selectedAppointmentForPrescription.blood,
+      date: selectedAppointmentForPrescription.date,
+      time: selectedAppointmentForPrescription.time,
+      diagnosis:selectedAppointmentForPrescription.diagnosis ,
+      patientImage:selectedAppointmentForPrescription.patientImage ,
+      doctorImage:selectedAppointmentForPrescription.doctorImage ,
+      patientId:selectedAppointmentForPrescription.patientId,
       doctorId:selectedAppointmentForPrescription.doctorId,
       appointmentId: selectedAppointmentForPrescription.id,
       patientName: selectedAppointmentForPrescription.patient,
       createdAt: new Date().toISOString(),
     };
-
+ 
     const res = await createPrescription(payload);
     if(res.ok){
       toast.success("Prescription added successfully!");
