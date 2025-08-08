@@ -73,8 +73,8 @@ export default function PrescriptionList({
     <div className="space-y-6 w-full ">
         <Tabs defaultValue="patient" className="w-full">
         <TabsList className="w-full border mb-4">
-            <TabsTrigger className="cursor-pointer" value="patient">Patient Info</TabsTrigger>
-            <TabsTrigger className="cursor-pointer" value="prescriptions">Prescriptions</TabsTrigger>
+            <TabsTrigger className="cursor-pointer " value="patient">Patient Info</TabsTrigger>
+            <TabsTrigger className="cursor-pointer " value="prescriptions">Prescriptions</TabsTrigger>
         </TabsList>
         <TabsContent value="patient" className="mt-4" >
             {latestDiagnoses && latestDiagnoses.length > 0 && (
@@ -84,14 +84,14 @@ export default function PrescriptionList({
                         {latestDiagnoses.slice(0, 3).map((appt) => (
                         <div
                             key={appt.id}
-                            className="flex items-center gap-2 px-4 py-2 bg-teal-100 rounded-lg shadow-sm "
+                            className="flex items-center gap-2 px-4 py-2 border-l-4 border-teal-500 rounded-lg shadow-sm bg-white "
                         >
                             <div className="text-teal-600 bg-white p-1 rounded-full">
                             <TiChartLine className="w-5 h-5" />
                             </div>
                             <div>
                             <p className="text-sm font-medium text-gray-800 truncate w-40">{appt.diagnosis}</p>
-                            <p className="text-xs text-gray-500">{format(new Date(appt.date), "MMMM d, yyyy")}</p>
+                            <p className="text-xs text-teal-500">{format(new Date(appt.date), "MMMM d, yyyy")}</p>
                             </div>
                         </div>
                         ))}
@@ -112,7 +112,7 @@ export default function PrescriptionList({
         <TabsContent value="prescriptions">
             <div className="space-y-4">
                 {prescriptions.map((item, index:number) => (
-                <div key={index} className="border p-4 rounded-lg bg-white shadow-sm">
+                <div key={index} className="border-l-4 border-teal-500 p-4 rounded-lg bg-white shadow-sm">
                     <div className="flex justify-between">
                     <div>
                         <h3 className="font-bold text-gray-800">{item.medicineName}</h3>

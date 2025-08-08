@@ -64,7 +64,7 @@ export default function PatientDashboard() {
               </div>
               
             </div>
-            <div className="relative cursor-pointer">
+            <div onClick={()=>{router.push("/patient/notificationPage")}} className="relative cursor-pointer">
               <IoNotificationsOutline className="size-7 mt-2 " />
               <div className="size-4 rounded-full bg-red-400 text-xs text-center text-white absolute top-1 right-0">4</div>
             </div>

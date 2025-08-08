@@ -41,7 +41,7 @@ export default function DoctorDashboard() {
   if (!doctor) return null;
 
   return (
-    <div className="min-h-screen max-h-screen pt-20 lg:pt-0 flex bg-gray-50">
+    <div className="min-h-screen max-h-screen pt-20 lg:pt-0 flex bg-white">
       <main className="flex-1">
         {/* Top bar */}
         <div className="flex p-8 justify-between items-center mb-8">
@@ -70,9 +70,9 @@ export default function DoctorDashboard() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 p-8 sm:grid-cols-3 gap-6 mb-8">
-          <StatCard label="Appointments" value={`${appointments.length}`} color="bg-blue-100 text-blue-600" />
-          <StatCard label="Patients" value={`${patients}`} color="bg-orange-100 text-orange-600" />
-          <StatCard label="Avg. Earning" value="₹2300.00" color="bg-green-100 text-green-600" />
+          <StatCard label="Appointments" value={`${appointments.length}`} color="bg-blue-100 text-blue-600 border-l-4 border-blue-500" />
+          <StatCard label="Patients" value={`${patients}`} color="bg-orange-100 text-orange-600  border-l-4 border-orange-500" />
+          <StatCard label="Avg. Earning" value="₹2300.00" color="bg-green-100 text-green-600  border-l-4 border-green-500" />
         </div>
 
         {/* Graph and Calendar */}
@@ -93,7 +93,7 @@ export default function DoctorDashboard() {
 
 function StatCard({ label, value, color }: { label: string; value: string; color: string }) {
   return (
-    <div className={`p-6 rounded shadow-md ${color} transform transition-transform duration-300 hover:scale-105`}>
+    <div className={`p-6 rounded-xl  cursor-pointer shadow-md ${color} transform transition-transform duration-300 hover:scale-105`}>
       <h4 className="text-sm font-medium">{label}</h4>
       <p className="text-2xl font-bold mt-2">{value}</p>
     </div>

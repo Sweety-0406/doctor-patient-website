@@ -9,21 +9,23 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
+        white:
+          "bg-white hover:bg-muted cursor-pointer text-teal-500 shadow-xs ",
         teal:
           "bg-teal-500 hover:bg-teal-600 cursor-pointer text-white shadow-xs ",
         green:
           "bg-green-500 hover:bg-green-600 cursor-pointer text-white shadow-xs ",
         default:
-          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
+          "bg-primary text-primary-foreground cursor-pointer shadow-xs hover:bg-primary/90",
         destructive:
-          "bg-destructive text-white shadow-xs hover:bg-destructive/70 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
+          "bg-destructive text-white cursor-pointer shadow-xs hover:bg-destructive/70 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
-          "border bg-gray-300 shadow-xs hover:bg-gray-100 hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
+          "border bg-gray-300 shadow-xs cursor-pointer hover:bg-gray-100 hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
+          "bg-secondary text-secondary-foreground cursor-pointer shadow-xs hover:bg-secondary/80",
         ghost:
-          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
-        link: "text-primary underline-offset-4 hover:underline",
+          "hover:bg-accent cursor-pointer hover:text-accent-foreground dark:hover:bg-accent/50",
+        link: "text-primary cursor-pointer underline-offset-4 hover:underline",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

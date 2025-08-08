@@ -119,11 +119,11 @@ export default function PrescriptionPage() {
 
   return (
     <div className="flex h-screen    overflow-hidden">
-      <PrescriptionSidebar
-        prescriptions={prescriptionList}
-        selectedId={selectedPrescriptionId}
-        onSelect={setSelectedPrescriptionId}
-      />
+        <PrescriptionSidebar
+          prescriptions={prescriptionList}
+          selectedId={selectedPrescriptionId}
+          onSelect={setSelectedPrescriptionId}
+        />
 
       <div className="flex-1 overflow-y-auto p-6  mt-20 lg:mt-0  bg-gray-50">
         {selectedPrescription && (
