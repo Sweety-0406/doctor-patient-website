@@ -187,7 +187,6 @@ export default function DoctorSignupPage() {
     watch,
     setValue,
   } = useForm<DoctorFormData>({
-    // resolver: yupResolver(doctorSignupSchema) as any,
     resolver: yupResolver(doctorSignupSchema) as unknown as Resolver<DoctorFormData>,
     defaultValues: {
       available: [],

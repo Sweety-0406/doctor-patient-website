@@ -12,31 +12,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import toast from "react-hot-toast";
 import PrescriptionForm, { PrescriptionFormValues } from "@/components/prescriptionForm";
 import { Button } from "@/components/ui/button";
+import { FullPrescription } from "@/app/types";
 
-interface FullPrescription {
-  id: string;
-  diagnosis: string;
-  gender: string;
-  age: string;
-  phone: string;
-  address: string;
-  blood: string;
-  date: string;
-  time: string;
-  appointmentId: string;
-  patientName: string;
-  patientImage: string;
-  doctorId: string;
-  doctorImage: string;
-  createdAt: string;
-  medicines: {
-    medicineName: string;
-    dosage: string;
-    duration: string;
-    notes?: string;
-  }[];
-  patientId: string;
-}
+
 
 export default function PrescriptionPage() {
   const { doctor, loading } = useDoctorAuth();
@@ -110,6 +88,7 @@ export default function PrescriptionPage() {
       medicineName: m.medicineName,
       dosage: m.dosage,
       duration: m.duration,
+      interval: m.interval,
       notes: m.notes,
       appointmentId: selectedPrescription.appointmentId,
       createdAt: selectedPrescription.createdAt,

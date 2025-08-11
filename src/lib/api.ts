@@ -1,5 +1,5 @@
 
-import { Appointment, DoctoSignup, PatientSignup, Prescription } from "@/app/types";
+import { Appointment, DoctoSignup, patientList, PatientSignup, Prescription } from "@/app/types";
 
 // export const API_BASE ="http://localhost:3001"
 export const API_BASE =process.env.NEXT_PUBLIC_BASE_API
@@ -211,3 +211,15 @@ export const createPrescription = async (data: Prescription) => {
 
 export const getPrescriptionsByPatient = (appointmentId: string) =>
   fetch(`${API_BASE}/prescriptions?appointmentId=${appointmentId}`).then(res => res.json());
+
+
+//PATIENT_LIST
+export const getPatientListbyPatientId = (doctorId: string, patientId:string) =>
+  fetch(`${API_BASE}/patientList?doctorId=${doctorId}&patientId=${patientId}`).then(res => res.json());
+
+export const updatePatientList=(data: patientList)=>
+  fetch(`${API_BASE}/patientList/${data.id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });

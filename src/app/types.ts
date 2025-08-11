@@ -20,6 +20,7 @@ export type Appointment = {
   status: "approved" | "pending"  | "rejected" | "cancelled" | "completed" | "reschedule" | string;
   rating: number
   reason?:string
+  createdAt: string;  
   patientImage?:string
   isPrescriptionAvailable:boolean
 };
@@ -57,6 +58,7 @@ export type Patient = {
   phone?:string,
   bloodGroup?:string,
   gender?:string
+  image?:string
 };
 
 export type DoctoSignup = {
@@ -84,7 +86,7 @@ export type PatientSignup = {
   user: string
 }
 
-export interface Prescription {
+export type Prescription = {
   doctorId:string;
   patientId:string;
   diagnosis:string;
@@ -101,10 +103,85 @@ export interface Prescription {
   time: string;
   createdAt: string;
   medicines: {
-      medicineName: string;
-      dosage: string;
-      duration: string;
-      notes?: string | undefined;
+    medicineName: string;
+    dosage: string;
+    duration: string;
+    interval:string;
+    notes?: string | undefined;
   }[];
 }
 
+
+export type  FullPrescription = {
+  id: string;
+  diagnosis: string;
+  gender: string;
+  age: string;
+  phone: string;
+  address: string;
+  blood: string;
+  date: string;
+  time: string;
+  appointmentId: string;
+  patientName: string;
+  patientImage: string;
+  doctorId: string;
+  doctorImage: string;
+  createdAt: string;
+  medicines: {
+    medicineName: string;
+    dosage: string;
+    duration: string;
+    interval:string;
+    notes?: string;
+  }[];
+  patientId: string;
+}
+
+export type patientList = {
+  id?:string;
+  doctorId: string,
+  patientId: string;
+  gender:string;
+  age:string;
+  phone:string;
+  address:string;
+  blood:string;
+  patientName:string;
+  createdAt: string
+  registeredDate: string;
+  status: string;
+  
+  patientImage?:string;
+  bloodPressure?:string;
+  heartRate?:string;
+  glucose?:string;
+  cholesterol?:string;
+  bedNumber?: string;
+  allergies?: string[]; 
+  chronicConditions?: string[]; 
+  currentMedications?: string[];
+  lifestyle?: {
+    smoking?: boolean;
+    alcohol?: boolean;
+    exercise?: string;
+  };
+  emergencyContact?: {
+    name?: string;
+    relation?: string;
+    phone?: string;
+  };
+  insurance?: {
+    provider?: string;
+    policyNumber?: string;
+  };
+  documents?: Array<{
+    id: string;
+    name: string;
+    url?: string;
+    uploadedAt?: string;
+  }>;  
+  dob?:string;
+  email?:string;
+  department?: string;
+}

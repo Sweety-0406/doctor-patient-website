@@ -17,6 +17,7 @@ interface Prescription {
   medicineName: string;
   dosage: string;
   duration: string;
+  interval:string;
   notes?: string;
   appointmentId: string;
   createdAt: string;
@@ -119,7 +120,10 @@ export default function PrescriptionList({
                         <p className="text-sm text-gray-600">
                         {item.dosage} | {item.duration}
                         </p>
-                        <p className="text-xs italic text-gray-500">{item.notes}</p>
+                        <p className="text-sm text-gray-600">
+                        {item.interval}
+                        </p>
+                        <p className="text-xs italic text-gray-500">Notes: {item.notes}</p>
                         <p className="text-xs text-gray-400 mt-1">
                         {format(new Date(item.createdAt), "dd MMM yyyy")} • App ID: {item.appointmentId}
                         </p>

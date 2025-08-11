@@ -65,25 +65,44 @@ export default function BookingAppointmentPage() {
     const payload = {
       doctorId: doctorId as string,
       patientId: String(patient?.id),
-      doctorImage: doc.image,
-      doctorName: doc.name,
-      status: "pending" as const,
+      id: crypto.randomUUID(),
+      createdAt: new Date().toISOString(),
+      patientImage: patient?.image,
       patient: formData.patient,
       gender: formData.gender as "Male" | "Female" | "Other",
       age: formData.age.toString(),
-      diagnosis: formData.diagnosis,
       phone: formData.phone,
       address: formData.address,
       blood: formData.blood as "A+" | "A-" | "B+" | "B-" | "O+" | "O-" | "AB+" | "AB-" | string,
+      
+      diagnosis: formData.diagnosis,
+      doctorImage: doc.image,
+      doctorName: doc.name,
+      status: "pending" as const,
       triage: formData.triage as "Non Urgent" | "Urgent" | "Emergency" | string,
       date: formData.date,
       time: formData.time,
       payment: formData.payment,
-      id: crypto.randomUUID(),
       rating: 0,
       isPrescriptionAvailable:false
     };
 
+    const patientListPayload={
+      id: crypto.randomUUID(),
+      doctorId: doctorId as string,
+      patientId: String(patient?.id),
+      createdAt: new Date().toISOString(),
+      registeredDate: new Date().toISOString(),
+      patientImage: patient?.image,
+      patientName: formData.patient,
+      gender: formData.gender as "Male" | "Female" | "Other",
+      age: formData.age.toString(),
+      phone: formData.phone,
+      address: formData.address,
+      blood: formData.blood as "A+" | "A-" | "B+" | "B-" | "O+" | "O-" | "AB+" | "AB-" | string,
+      status: "Active" 
+    }
+    
     const res = await postAppointment(payload);
     if (res.ok) {
       toast.success("Appointment booked successfully");

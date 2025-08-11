@@ -29,11 +29,11 @@ const Navbar = ()=>{
         logout();
     };
     return(
-        <nav className="w-full z-10 absolute  h-20 flex justify-between bg-white shadow-md p-6 flex  justify-between">
+        <nav className="w-full z-10 absolute  h-20 flex justify-between bg-teal-500 shadow-md p-6 flex  justify-between">
             <div className="flex justify-between w-full">
-                <Link href="/" className="text-2xl font-bold text-teal-600 ">Doc-Center</Link>
+                <Link href="/" className="text-2xl font-bold text-white ">Doc-Center</Link>
                 <Sheet >
-                    <SheetTrigger className="cursor-pointer" ><GiHamburgerMenu /></SheetTrigger>
+                    <SheetTrigger className="cursor-pointer" ><GiHamburgerMenu className="text-white" /></SheetTrigger>
                     <SheetContent className="w-48 bg-teal-500">
                         <SheetHeader className="border-b-2">
                             <SheetTitle className="text-white">Doctor Menu</SheetTitle>

@@ -159,6 +159,7 @@ const medicineSchema = z.object({
   medicineName: z.string().min(1, "Medicine name is required"),
   dosage: z.string().min(1, "Dosage is required"),
   duration: z.string().min(1, "Duration is required"),
+  interval: z.string().min(1, "Interval is required"),
   notes: z.string().optional(),
 });
 
@@ -178,7 +179,7 @@ export default function PrescriptionForm({ onSubmit, defaultValues }: Prescripti
     resolver: zodResolver(prescriptionSchema),
     defaultValues: {
       medicines: defaultValues?.medicines || [
-        { medicineName: "", dosage: "", duration: "", notes: "" },
+        { medicineName: "", dosage: "", duration: "", interval:"", notes: "" },
       ],
     },
   });
@@ -193,7 +194,7 @@ export default function PrescriptionForm({ onSubmit, defaultValues }: Prescripti
   useEffect(() => {
     if (defaultValues) {
       reset({
-        medicines: defaultValues.medicines || [{ medicineName: "", dosage: "", duration: "", notes: "" }],
+        medicines: defaultValues.medicines || [{ medicineName: "", dosage: "", duration: "", interval:"", notes: "" }],
       });
     }
   }, [defaultValues, reset]);
@@ -201,7 +202,7 @@ export default function PrescriptionForm({ onSubmit, defaultValues }: Prescripti
   const handleFormSubmit = (values: PrescriptionFormValues) => {
     onSubmit(values);
     reset({
-      medicines: [{ medicineName: "", dosage: "", duration: "", notes: "" }],
+      medicines: [{ medicineName: "", dosage: "", duration: "", interval:"", notes: "" }],
     });
   };
 
@@ -262,6 +263,20 @@ export default function PrescriptionForm({ onSubmit, defaultValues }: Prescripti
                       </FormItem>
                     )}
                   />
+
+                  <FormField
+                    control={control}
+                    name={`medicines.${index}.interval`}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Interval</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g., two time in a day" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
                 <FormField
@@ -286,7 +301,7 @@ export default function PrescriptionForm({ onSubmit, defaultValues }: Prescripti
             variant="outline"
             className="w-full cursor-pointer  border-dashed text-teal-500 hover:text-teal-500"
             onClick={() =>
-              append({ medicineName: "", dosage: "", duration: "", notes: "" })
+              append({ medicineName: "", dosage: "", duration: "", interval:"", notes: "" })
             }
           >
             + Add Another Medicine
