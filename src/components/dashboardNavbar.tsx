@@ -12,11 +12,11 @@ const DashboardNavbar = ()=>{
     return(
         <nav className="absolute h-[58px] fixed top-0 left-0 w-full z-50 bg-white/30 backdrop-blur-md border-b border-gray-200 flex items-center justify-between px-5 ">
             <img onClick={()=>router.push("/")} src="/images/logo.png" alt="" width={50} height={50} className='cursor-pointer'/>
-            <nav className="hidden md:flex space-x-6 lg:space-x-10 text-sm lg:text-lg font-medium text-teal-500">
-                <Link href="#features">Features</Link>
-                <Link href="#about">About</Link>
-                <Link href="#pricing">Pricing</Link>
-                <Link href="#contact">Contact</Link>
+            <nav className="hidden md:flex space-x-6 lg:space-x-10 text-sm lg:text-lg font-medium text-white ">
+                <Link href="#features" className="bg-teal-500 px-2 rounded-md">Features</Link>
+                <Link href="#about" className="bg-teal-500 px-2 rounded-md">About</Link>
+                <Link href="#pricing" className="bg-teal-500 px-2 rounded-md">Pricing</Link>
+                <Link href="#contact" className="bg-teal-500 px-2 rounded-md">Contact</Link>
             </nav>
             <div className="flex gap-4">
                 <Link href="/doctor/login">

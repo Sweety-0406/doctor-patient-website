@@ -12,8 +12,8 @@ export default function Contact() {
         <div className="bg-white/50 my-5 items-center flex justify-center size-16 p-2 rounded-md">
           <FaRegMessage className="size-8" />
         </div>
-        <h2 className="text-3xl md:text-4xl font-bold mb-6">Stay in the creative loop</h2>
-        <p className="max-w-lg ">Get design tips, new templates, and exclusive features delivered to your inbox. Plus, get a free premium template pack when you subscribe!</p>
+        <h2 className="text-3xl md:text-4xl font-bold mb-6">Stay in the healthcare  loop</h2>
+        <p className="max-w-lg ">Get tips for improving patient care, updates on new features, and exclusive resources delivered to your inbox.</p>
         <form className="flex w-full md:max-w-md flex-col sm:flex-row mt-8 gap-4 justify-center">
           <Input
             type="email" 

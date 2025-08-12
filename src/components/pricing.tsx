@@ -5,25 +5,48 @@ const plans = [
     title: "Free",
     cost: "0",
     costText: "forever",
-    description:"Perfect for getting started with design",
-    features: ["5 projects", "Basic templates", "Standard export quality", "Community support", "1GB storage"]
+    description: "Perfect for getting started with patient management",
+    features: [
+      "Up to 50 patient records",
+      "Basic appointment scheduling",
+      "Standard reporting",
+      "Email support",
+      "1GB secure storage"
+    ]
   },
   {
     title: "Pro",
-    cost: "12",
+    cost: "49",
     costText: "per month",
-    description:"For professional designers and teams",
-    features: ["Unlimited projects", "Premium templates", "4K export quality", "Priority support", "Team collaboration", "Advanced tools", "100GB storage"],
+    description: "For growing clinics and healthcare teams",
+    features: [
+      "Unlimited patient records",
+      "Advanced appointment scheduling",
+      "E-prescriptions",
+      "Priority support",
+      "Multi-user access & roles",
+      "Custom reports & analytics",
+      "100GB secure storage"
+    ],
     popular: true
   },
   {
     title: "Enterprise",
     cost: "Custom",
     costText: "pricing",
-    description:"For large teams and organizations",
-    features: ["Everything in Pro", "Unlimited storage", "Custom branding", "SSO integration", "Dedicated support", "Custom integrations", "Admin controls"]
+    description: "For hospitals and large healthcare networks",
+    features: [
+      "Everything in Pro",
+      "Unlimited secure storage",
+      "Custom branding & white-label options",
+      "SSO & advanced security",
+      "Dedicated account manager",
+      "Custom integrations with EMR/EHR",
+      "Advanced admin controls"
+    ]
   }
 ];
+
 
 export default function Pricing() {
   return (
@@ -32,13 +55,13 @@ export default function Pricing() {
         <div className="text-center flex flex-col justify-center items-center w-full">
           <h2 className="text-4xl md:text-5xl  font-bold mb-5 text-center leading-tight">
             <span className="whitespace-pre-wrap">
-              Choose your {" "}
+              Flexible plans for {" "}
               <span className="bg-teal-500  bg-clip-text text-transparent">
-                creative plan
+                every healthcare provider
               </span>
             </span>
           </h2>          
-          <p className="text-lg mb-16 max-w-xl text-gray-500">Start free and upgrade as you grow. All plans include our core design tools and customer support.</p>
+          <p className="text-lg mb-16 max-w-xl text-gray-500">Start free and upgrade as your practice grows. All plans include our core patient management tools and dedicated support.</p>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-20 lg:gap-10">
           {plans.map((plan, i) => (

@@ -2,30 +2,31 @@ import TestimonialCard from "./testimonialCard";
 
 const testimonials = [
   {
-    name: "Sarah Chen",
-    iconText: "👩‍💼",
-    profession: "Creative Director",
-    description: "PixelForge has completely transformed our design workflow. What used to take hours now takes minutes, and the quality is consistently amazing."
+    name: "Dr. Sarah Williams",
+    iconText: "👩‍⚕️",
+    profession: "Cardiologist",
+    description: "This platform has completely streamlined my patient management. I can access records instantly and spend more time focusing on care instead of paperwork."
   },
   {
-    name: "David Kim",
-    iconText: "👨‍🎨",
-    profession: "Freelance Designer",
-    description: "I've tried every design tool out there, and PixelForge is hands down the most intuitive. My clients are blown away by the results."
+    name: "Dr. David Kim",
+    iconText: "👨‍⚕️",
+    profession: "General Practitioner",
+    description: "I've used multiple systems before, but this is by far the most intuitive. Managing appointments and prescriptions has never been easier."
   },
   {
-    name: "Lina Gomez",
-    iconText: "👩‍💻",
-    profession: "Marketing Lead",
-    description: "Our team went from zero design skills to creating professional-quality content. PixelForge makes everyone feel like a designer."
+    name: "Nurse Lina Gomez",
+    iconText: "👩‍⚕️",
+    profession: "Head Nurse",
+    description: "Our clinic went from piles of paperwork to a fully digital workflow. Communication between doctors and nurses has improved drastically."
   },
   {
     name: "Raj Patel",
-    iconText: "👨‍💼",
-    profession: "Product Manager",
-    description: "The collaboration features are incredible. Our remote team can work together seamlessly, and the real-time editing is a game-changer."
+    iconText: "🏥",
+    profession: "Clinic Administrator",
+    description: "The collaboration tools are incredible. Doctors, nurses, and staff can share updates in real-time, and our patients love the improved efficiency."
   }
 ];
+
 
 export default function Testimonials() {
   return (
@@ -36,11 +37,11 @@ export default function Testimonials() {
             <span className="whitespace-pre-wrap">
               Loved by {" "}
               <span className="bg-teal-500   bg-clip-text text-transparent">
-                creative professionals
+                healthcare professionals
               </span>
             </span>
           </h2>
-          <p className="text-lg mb-16 max-w-xl text-gray-500">Join thousands of designers, marketers, and creators who trust PixelForge to bring their vision to life every day.</p>
+          <p className="text-lg mb-16 max-w-xl text-gray-500">Join thousands of doctors, nurses, and clinics who rely on our platform to deliver exceptional patient care every day.</p>
       </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {testimonials.map((t, i) => (

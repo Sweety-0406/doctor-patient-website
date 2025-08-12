@@ -95,19 +95,19 @@ export default function PatientProfile() {
         <FaArrowLeft onClick={()=>router.back()} className="absolute cursor-pointer text-teal-500 size-8 left-10 md:left-6 top-28 md:top-24 lg:top-6" />
         <div className="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row gap-6">
             {/* Left: Image + Name */}
-            <div className="flex flex-col items-center md:items-start w-full md:w-1/3">
-            <Image
-                src={patient?.patientImage || "/images/avatar.png"}
-                alt={"patient-image"}
-                width={120}
-                height={120}
-                className="rounded-full object-cover"
-            />
-            <h2 className="mt-4 text-xl font-semibold">{patient.patientName}</h2>
-            <p className="text-gray-500">{patient.email}</p>
-            <Button onClick={() => { setEditData(patient); setOpen(true); }} className="mt-3" variant="teal">
-                Edit Profile
-            </Button>
+            <div className="flex flex-col items-center justify-center  md:ml-8 md:items-start w-full md:w-1/3">
+              <Image
+                  src={patient?.patientImage || "/images/avatar.png"}
+                  alt={"patient-image"}
+                  width={120}
+                  height={120}
+                  className="rounded-full object-cover"
+              />
+              <h2 className="mt-4 text-xl font-semibold">{patient.patientName}</h2>
+              <p className="text-gray-500">{patient.email}</p>
+              <Button onClick={() => { setEditData(patient); setOpen(true); }} className="mt-3" variant="teal">
+                  Edit Profile
+              </Button>
             </div>
 
             {/* Right: Patient Details */}
@@ -128,7 +128,7 @@ export default function PatientProfile() {
               {/* Contact & Personal */}
               <div>
                   <h3 className="font-semibold text-lg mb-3">Personal & Contact</h3>
-                  <div className="bg-white shadow rounded-xl p-6  text-sm">
+                  <div className="bg-white border-l-2 border-teal-500 shadow rounded-xl p-6  text-sm">
                       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 mb-4">
                           <Detail label="Address" value={patient.address} />
                           <Detail label="Phone" value={patient.phone} />
@@ -240,9 +240,9 @@ export default function PatientProfile() {
               </div>
 
               {/* Medical Info */}
-              <div>
+              <div >
                   <h3 className="font-semibold text-lg mb-3">Medical Information</h3>
-                  <div className="bg-white shadow rounded-xl p-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div className="bg-white border-l-2 border-teal-500 shadow rounded-xl p-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <Detail label="Allergies" value={patient.allergies?.join(", ")} />
                   <Detail label="Chronic Conditions" value={patient.chronicConditions?.join(", ")} />
                   <Detail label="Current Medications" value={patient.currentMedications?.join(", ")} />
@@ -252,7 +252,7 @@ export default function PatientProfile() {
               {/* Lifestyle */}
               <div>
                   <h3 className="font-semibold text-lg mb-3">Lifestyle</h3>
-                  <div className="bg-white shadow rounded-xl p-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div className="bg-white border-l-2 border-teal-500 shadow rounded-xl p-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <Detail label="Smoking" value={patient.lifestyle?.smoking ? "Yes" : "No"} />
                   <Detail label="Alcohol" value={patient.lifestyle?.alcohol ? "Yes" : "No"} />
                   <Detail label="Exercise" value={patient.lifestyle?.exercise} />
@@ -262,7 +262,7 @@ export default function PatientProfile() {
               {/* Insurance */}
               <div>
                   <h3 className="font-semibold text-lg mb-3">Insurance</h3>
-                  <div className="bg-white shadow rounded-xl p-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div className="bg-white border-l-2 border-teal-500 shadow rounded-xl p-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <Detail label="Provider" value={patient.insurance?.provider} />
                   <Detail label="Policy Number" value={patient.insurance?.policyNumber} />
                   </div>
@@ -272,7 +272,7 @@ export default function PatientProfile() {
               {patient.documents && patient.documents.length > 0 && (
                   <div>
                   <h3 className="font-semibold text-lg mb-3">Documents</h3>
-                  <div className="bg-white shadow rounded-xl p-6 text-sm">
+                  <div className="bg-white border-l-2 border-teal-500 shadow rounded-xl p-6 text-sm">
                       <ul className="list-disc list-inside">
                       {patient.documents.map((doc) => (
                           <li key={doc.id}>
@@ -484,7 +484,7 @@ function VitalCard({
   statusColor: string;
 }) {
   return (
-    <div className="bg-white p-4 rounded-xl shadow text-center">
+    <div className="bg-white border-l-2 border-teal-500 hover:scale-105 shadow hover:shadow-lg hover:shadow-teal-100 cursor-pointer transition p-4 rounded-xl shadow text-center">
       <p className="text-gray-500">{title}</p>
       <h4 className="text-xl font-bold">
         {value} <span className="text-sm font-normal">{unit}</span>
