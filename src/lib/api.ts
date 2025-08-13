@@ -1,5 +1,5 @@
 
-import { Appointment, DoctoSignup, patientList, PatientSignup, Prescription } from "@/app/types";
+import { Appointment, DoctoSignup, FeedbackItem, patientList, PatientSignup, Prescription } from "@/app/types";
 
 // export const API_BASE ="http://localhost:3001"
 export const API_BASE =process.env.NEXT_PUBLIC_BASE_API
@@ -106,6 +106,9 @@ export const updatePatientProfile = (id: string, name: string,email: string, age
 
 export const getPatientAppointments = (id: string) =>
   fetch(`${API_BASE}/appointments?patientId=${id}`)
+
+export const getAppointmentById = (id: string) =>
+  fetch(`${API_BASE}/appointments?id=${id}`).then(res => res.json());
 
 export const postAppointment = (data: Appointment) =>
   fetch(`${API_BASE}/appointments`, {
@@ -222,4 +225,80 @@ export const updatePatientList=(data: patientList)=>
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
+  });
+
+
+
+export const addPatientIfNotExists = async (
+  patientData: patientList
+) => {
+  try {
+    const existingPatient = await getPatientListbyPatientId(patientData.doctorId, patientData.patientId);
+
+    if (existingPatient && existingPatient.length > 0) {
+      console.log("Patient already exists, skipping add.");
+      return { message: "Patient already exists", patient: existingPatient[0] };
+    }
+
+    const res = await fetch(`${API_BASE}/patientList`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(patientData),
+    });
+
+    if (!res.ok) throw new Error("Failed to add patient");
+
+    const newPatient = await res.json();
+    console.log("Patient added:", newPatient);
+
+    return { message: "Patient added successfully", patient: newPatient };
+  } catch (error) {
+    console.error("Error adding patient:", error);
+    throw error;
+  }
+};
+
+
+//FEEDBACK_API
+
+export const postFeedback = (data: FeedbackItem) =>
+  fetch(`${API_BASE}/feedbacks`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+});
+
+export const updateFeedback = (id:string, data: FeedbackItem) =>
+  fetch(`${API_BASE}/feedbacks/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+});
+
+export const getAllFeedbacks = (id: string) =>
+  fetch(`${API_BASE}/feedbacks?doctorId=${id}`).then(res => res.json());
+
+export const getFeedbackById = (doctorId: string, feedbackId: string) =>
+  fetch(`${API_BASE}/feedbacks/${feedbackId}?doctorId=${doctorId}`).then(res => res.json());
+
+export const changeStatusOfFeedback = (id: string, status: 'new' | 'reviewed' | 'responded') =>
+  fetch(`${API_BASE}/feedbacks/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ status: status }),
+  });
+
+export const getFeedbacksByPatient = (patientId: string, appointmentId: string) => {
+  return fetch(`${API_BASE}/feedbacks?patientId=${patientId}&appointmentId=${appointmentId}`)
+    .then((res) => res.json());
+};
+
+export const deleteFeedbackById = (id: string) =>
+  fetch(`${API_BASE}/feedbacks/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
   });

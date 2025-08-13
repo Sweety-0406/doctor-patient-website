@@ -1,10 +1,12 @@
+
 "use client"
 
-import { FaUserGroup, FaArrowTrendUp  } from "react-icons/fa6";
+import { FaUserGroup, FaArrowTrendUp } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
 import { TbWorld } from "react-icons/tb";
 import StatsCard from "./statsCard";
 import Testimonials from "./testimonials";
+import { motion } from "framer-motion";
 
 const stats = [
   {
@@ -34,26 +36,56 @@ const stats = [
 ];
 
 export default function Stats() {
-
   return (
-    <section id="about" className="py-16  px-6  md:mx-[5%]  text-center">
-      <div className="text-center flex flex-col justify-center items-center w-full">
-          <h2 className="text-4xl md:text-5xl  font-bold mb-5 text-center leading-tight">
-            <span className="whitespace-pre-wrap">
-              Trusted by {" "}
-              <span className="bg-teal-500 bg-clip-text text-transparent">
-                healthcare professionals worldwide
-              </span>
+    <section id="about" className="py-16 px-6 md:mx-[5%] text-center">
+      <motion.div
+        className="text-center flex flex-col justify-center items-center w-full"
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+      >
+        <h2 className="text-4xl md:text-5xl font-bold mb-5 text-center leading-tight">
+          <span className="whitespace-pre-wrap">
+            Trusted by{" "}
+            <span className="bg-teal-500 bg-clip-text text-transparent">
+              healthcare professionals worldwide
             </span>
-          </h2>
-          <p className="text-lg mb-16 max-w-md text-gray-500">Our results speak to our commitment to efficient, secure healthcare management.</p>
-      </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8  mx-auto">
+          </span>
+        </h2>
+        <p className="text-lg mb-16 max-w-md text-gray-500">
+          Our results speak to our commitment to efficient, secure healthcare management.
+        </p>
+      </motion.div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mx-auto">
         {stats.map((stat, i) => (
-          <StatsCard key={i} icon={stat.icon} title={stat.title} description={stat.description} color={stat.color} />
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.15, duration: 0.6, ease: "easeOut" }}
+            whileHover={{ scale: 1.05 }}
+            viewport={{ once: true }}
+          >
+            <StatsCard
+              icon={stat.icon}
+              title={stat.title}
+              description={stat.description}
+              color={stat.color}
+            />
+          </motion.div>
         ))}
       </div>
-      <Testimonials />
+
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.8 }}
+        viewport={{ once: true }}
+      >
+        <Testimonials />
+      </motion.div>
     </section>
   );
 }

@@ -185,3 +185,26 @@ export type patientList = {
   email?:string;
   department?: string;
 }
+
+
+export type FeedbackItem = {
+  id: string;
+  doctorId:string;
+  patientId:string;
+  appointmentId:string
+  patientName: string;
+  patientEmail: string;
+  appointment:Appointment;
+  ratings: {
+    overall: number;
+    service: number;
+    quality: number;
+    communication: number;
+  };
+  feedback: string;
+  category: string;
+  wouldRecommend: boolean;
+  submittedAt: string;
+  status: 'new' | 'reviewed' | 'responded';
+  // priority: 'low' | 'medium' | 'high';
+}

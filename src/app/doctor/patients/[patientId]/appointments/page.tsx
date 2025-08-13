@@ -306,9 +306,6 @@ const PatientAppointments = ()=>{
                                             <div key={index} className="border-l-4 border-teal-500  p-4 rounded-lg max-w-2xl hover:shadow-lg cursor-pointer transition hover:scale-103 bg-white shadow-sm">
                                                 <div className="flex flex-col gap-2 justify-between">
                                                     <h3 className="font-semibold flex gap-2 text-lg text-slate-600 "><span className="px-2 py-1 flex justify-center items-center rounded bg-green-100"><FaStethoscope className="mt- text-green-500 "/></span>{capitalizeName(item.diagnosis)}</h3>
-                                                    <p className="text-xs  text-gray-400 mt-1">
-                                                        App ID: {item.id}
-                                                    </p>
                                                     <div className="flex flex-col md:flex-row gap-2 justify-between mt-4">
                                                         <p className="text-sm  text-gray-500 flex gap-2"><LuAlarmClock className="size-5 text-green-500" />  {item.time}</p>
                                                         <p className={`text-sm text-gray-500  flex gap-2`}><FaRegCreditCard  className="size-5 text-yellow-500 mt-1" /> <span className={`  ${item.payment==="Paid"?"text-green-500 border border-green-500 bg-green-100 px-3 py-1 rounded-full":"text-red-500 bg-red-100 border border-red-500 px-3 py-1 rounded-full"}`}>{item.payment}</span></p>
@@ -316,6 +313,9 @@ const PatientAppointments = ()=>{
                                                             <StatusIndicator status={item.status} />
                                                         </div>
                                                     </div>
+                                                    <p className="text-xs border-t pt-2 font-semibold text-yellow-500 mt-1">
+                                                        App ID: {item.id}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>

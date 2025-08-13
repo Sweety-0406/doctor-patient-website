@@ -8,13 +8,23 @@ import { useParams, useRouter } from "next/navigation";
 import { getDoctorAppointments, getPatientListbyPatientId, updatePatientList } from "@/lib/api";
 import Image from "next/image";
 import { format } from "date-fns";
-import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowLeft, FaDumbbell } from "react-icons/fa";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import toast from "react-hot-toast";
+import { BiEditAlt } from "react-icons/bi";
+import { FiPhoneCall } from "react-icons/fi";
+import { IconType } from "react-icons";
+import { FaDroplet, FaRegHeart } from "react-icons/fa6";
+import { CiTempHigh } from "react-icons/ci";
+import { RiPulseLine } from "react-icons/ri";
+import { GoDotFill } from "react-icons/go";
+import { LuCigarette } from "react-icons/lu";
+import { GiWineGlass } from "react-icons/gi";
+import { HiOutlineDocumentText, HiOutlineArrowDownTray } from "react-icons/hi2";
+
 
 export default function PatientProfile() {
   const [patient, setPatient] = useState<patientList | null>(null);
@@ -23,7 +33,6 @@ export default function PatientProfile() {
   const router = useRouter()
   const { doctor, loading: doctorLoading } = useDoctorAuth();
   const { patientId } = useParams();
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [open, setOpen] = useState(false);
   const [editData, setEditData] = useState<patientList | null>(patient);
 
@@ -88,6 +97,8 @@ export default function PatientProfile() {
       }
     }
   };
+
+
   return (
     <div className=" mx-auto pt-20 lg:pt-0 relative max-h-screen ">
         <div className="space-y-6 p-4 ">
@@ -96,17 +107,22 @@ export default function PatientProfile() {
         <div className="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row gap-6">
             {/* Left: Image + Name */}
             <div className="flex flex-col items-center justify-center  md:ml-8 md:items-start w-full md:w-1/3">
-              <Image
+              <div className="relative">
+                <Image
                   src={patient?.patientImage || "/images/avatar.png"}
                   alt={"patient-image"}
                   width={120}
                   height={120}
                   className="rounded-full object-cover"
-              />
+                />
+                {patient.status === "Active" && (
+                  <div className="absolute p-3 border-2 left-20 top-24 border-white rounded-full bg-green-500" />
+                )}
+              </div>
               <h2 className="mt-4 text-xl font-semibold">{patient.patientName}</h2>
               <p className="text-gray-500">{patient.email}</p>
-              <Button onClick={() => { setEditData(patient); setOpen(true); }} className="mt-3" variant="teal">
-                  Edit Profile
+              <Button onClick={() => { setEditData(patient); setOpen(true); }} className="mt-3 flex gap-1 hover:scale-105 transition" variant="teal">
+                <BiEditAlt />  Edit Profile
               </Button>
             </div>
 
@@ -115,7 +131,11 @@ export default function PatientProfile() {
             <Detail label="Gender" value={patient.gender} />
             <Detail label="Age" value={patient.age} />
             <Detail label="Blood" value={patient.blood} />
-            <Detail label="Status" value={patient.status || "Active"} />
+            {patient.status === "Active" ?(
+              <Detail label="Status" style="bg-green-100 px-2 py-1 border border-green-500 rounded-full w-16" value={ "Active"} />
+            ):(
+              <Detail label="Status" style="bg-red-100 px-2 py-1 border border-red-500 rounded-full w-24" value={"Not Active"} />
+            )}
             <Detail label="Department" value={patient.department} />
             <Detail label="Registered Date" value={format(new Date(patient.createdAt), "dd MMM yyyy")}  />
             <Detail label="Appointment" value={(appointments.length).toString()} />
@@ -136,11 +156,13 @@ export default function PatientProfile() {
                           <Detail label="Email" value={patient.email} />
                           <Detail label="Blood Group" value={patient.blood} />
                       </div>
-                      <h3 className="font-semibold text-base mt-10 text-teal-500 mb-3">Emergency Contact</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                          <Detail label="Name" value={patient.emergencyContact?.name} />
-                          <Detail label="Relation" value={patient.emergencyContact?.relation} />
-                          <Detail label="Phone" value={patient.emergencyContact?.phone} />
+                      <div className="bg-red-50 border border-red-200 p-2 rounded-lg mt-10">
+                        <h3 className="font-semibold text-base  flex gap-1 text-red-500 mb-3"><FiPhoneCall className="size-5 mt-1" />Emergency Contact</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 ">
+                            <Detail label="Name" value={patient.emergencyContact?.name} />
+                            <Detail label="Relation" value={patient.emergencyContact?.relation} />
+                            <Detail label="Phone" value={patient.emergencyContact?.phone} />
+                        </div>
                       </div>
                   </div>
               </div>
@@ -151,6 +173,9 @@ export default function PatientProfile() {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     {/* Blood Pressure */}
                     <VitalCard
+                      color="red"
+                      bg="bg-red-50"
+                      icon={FaDroplet}
                       title="Blood Pressure"
                       value={patient.bloodPressure || "N/A"}
                       unit="mm/hg"
@@ -174,29 +199,12 @@ export default function PatientProfile() {
                       }
                     />
 
-                    {/* Heart Rate */}
-                    <VitalCard
-                      title="Heart Rate"
-                      value={patient.heartRate || "N/A"}
-                      unit="BPM"
-                      status={
-                        patient.heartRate
-                          ? parseInt(patient.heartRate) >= 60 && parseInt(patient.heartRate) <= 100
-                            ? "In the norm"
-                            : "Above the norm"
-                          : "N/A"
-                      }
-                      statusColor={
-                        patient.heartRate
-                          ? parseInt(patient.heartRate) >= 60 && parseInt(patient.heartRate) <= 100
-                            ? "text-green-500"
-                            : "text-red-500"
-                          : "text-gray-500"
-                      }
-                    />
-
+                    
                     {/* Glucose */}
                     <VitalCard
+                      color="blue"
+                      bg="bg-blue-50"
+                      icon={RiPulseLine }
                       title="Glucose"
                       value={patient.glucose || "N/A"}
                       unit="mg/dl"
@@ -216,8 +224,36 @@ export default function PatientProfile() {
                       }
                     />
 
+
+                    {/* Heart Rate */}
+                    <VitalCard
+                      color="orange"
+                      bg="bg-orange-50"
+                      icon={FaRegHeart }
+                      title="Heart Rate"
+                      value={patient.heartRate || "N/A"}
+                      unit="BPM"
+                      status={
+                        patient.heartRate
+                          ? parseInt(patient.heartRate) >= 60 && parseInt(patient.heartRate) <= 100
+                            ? "In the norm"
+                            : "Above the norm"
+                          : "N/A"
+                      }
+                      statusColor={
+                        patient.heartRate
+                          ? parseInt(patient.heartRate) >= 60 && parseInt(patient.heartRate) <= 100
+                            ? "text-green-500"
+                            : "text-red-500"
+                          : "text-gray-500"
+                      }
+                    />
+
                     {/* Cholesterol */}
                     <VitalCard
+                      color="green"
+                      bg="bg-green-50"
+                      icon={CiTempHigh }
                       title="Cholesterol"
                       value={patient.cholesterol || "N/A"}
                       unit="mg/dl"
@@ -242,20 +278,145 @@ export default function PatientProfile() {
               {/* Medical Info */}
               <div >
                   <h3 className="font-semibold text-lg mb-3">Medical Information</h3>
-                  <div className="bg-white border-l-2 border-teal-500 shadow rounded-xl p-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                  <Detail label="Allergies" value={patient.allergies?.join(", ")} />
+                  <div className="bg-white border-l-2 border-teal-500 shadow rounded-xl px-4 py-4 grid grid-cols-1  gap-4 text-sm">
+                    {/* <div className="bg-teal-50 text-teal-800 p-2 border  rounded-lg">
+                      <p className=" text-lg font-semibold">Allergies</p>
+                      <ul className="ml-2">
+                        {patient.allergies?.map((a:string,i:number)=>(
+                          <li key={i} className={`flex gap-1 `}><GoDotFill className="mt-1" />{a}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-teal-50 text-teal-800 p-2 border  rounded-lg">
+                      <p className=" text-lg font-semibold">Chronic Conditions</p>
+                      <ul className="ml-2">
+                        {patient.chronicConditions?.map((a:string,i:number)=>(
+                          <li key={i} className={`flex gap-1 `}><GoDotFill className="mt-1" />{a}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-teal-50 text-teal-800 p-2 border  rounded-lg">
+                      <p className=" text-lg font-semibold">Current Medications</p>
+                      <ul className="ml-2">
+                        {patient.currentMedications?.map((a:string,i:number)=>(
+                          <li key={i} className={`flex gap-1 `}><GoDotFill className="mt-1" />{a}</li> 
+                        ))}
+                      </ul>
+                    </div> */}
+{/* 
+
+
+                    <div className="bg-red-50 text-red-800 p-2 border border-red-500 rounded-lg">
+                      <p className=" text-lg font-semibold">Allergies</p>
+                      <ul className="ml-2">
+                        {patient.allergies?.map((a:string,i:number)=>(
+                          <li key={i} className={`flex gap-1 `}><GoDotFill className="mt-1" />{a}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-yellow-50 text-yellow-800 p-2 border border-yellow-500 rounded-lg">
+                      <p className=" text-lg font-semibold">Chronic Conditions</p>
+                      <ul className="ml-2">
+                        {patient.chronicConditions?.map((a:string,i:number)=>(
+                          <li key={i} className={`flex gap-1 `}><GoDotFill className="mt-1" />{a}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-green-50 text-green-800 p-2 border border-green-500 rounded-lg">
+                      <p className=" text-lg font-semibold">Current Medications</p>
+                      <ul className="ml-2">
+                        {patient.currentMedications?.map((a:string,i:number)=>(
+                          <li key={i} className={`flex gap-1 `}><GoDotFill className="mt-1" />{a}</li> 
+                        ))}
+                      </ul>
+                    </div> */}
+
+
+
+                    <div className="bg-green-50 text-green-800 p-2 border border-green-200 rounded-lg">
+                      <p className=" text-lg font-semibold">Allergies</p>
+                      <ul className="ml-2">
+                        {patient.allergies?.map((a:string,i:number)=>(
+                          <li key={i} className={`flex gap-1 `}><GoDotFill className="mt-1" />{a}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-sky-50 text-sky-800 p-2 border border-sky-200 rounded-lg">
+                      <p className=" text-lg font-semibold">Chronic Conditions</p>
+                      <ul className="ml-2">
+                        {patient.chronicConditions?.map((a:string,i:number)=>(
+                          <li key={i} className={`flex gap-1 `}><GoDotFill className="mt-1" />{a}</li>
+                        ))}
+                      </ul>
+                    </div>
+                    <div className="bg-green-50 text-green-800 p-2 border border-green-200 rounded-lg">
+                      <p className=" text-lg font-semibold">Current Medications</p>
+                      <ul className="ml-2">
+                        {patient.currentMedications?.map((a:string,i:number)=>(
+                          <li key={i} className={`flex gap-1 `}><GoDotFill className="mt-1" />{a}</li> 
+                        ))}
+                      </ul>
+                    </div>
+
+
+
+
+
+                  {/* <Detail style="bg-red-100 p-1 border border-red-500 rounded-lg" label="Allergies" value={patient.allergies?.join(", ")} />
                   <Detail label="Chronic Conditions" value={patient.chronicConditions?.join(", ")} />
-                  <Detail label="Current Medications" value={patient.currentMedications?.join(", ")} />
+                  <Detail label="Current Medications" value={patient.currentMedications?.join(", ")} /> */}
                   </div>
               </div>
 
               {/* Lifestyle */}
               <div>
                   <h3 className="font-semibold text-lg mb-3">Lifestyle</h3>
-                  <div className="bg-white border-l-2 border-teal-500 shadow rounded-xl p-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                  <Detail label="Smoking" value={patient.lifestyle?.smoking ? "Yes" : "No"} />
+                  <div className="bg-white border-l-2 border-teal-500 shadow rounded-xl p-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    {/* <div className="bg-teal-50 text-teal-800 p-2 flex gap-2 border  rounded-lg">
+                      <LuCigarette className="size-5 mt-3"/>
+                      <div>
+                        <p className=" text-lg font-semibold flex">Smoking</p>
+                        <p className={`flex gap-1 `}>{patient.lifestyle?.smoking ? "Yes" : "No"}</p>
+                      </div>
+                    </div>
+                    <div className="bg-teal-50 text-teal-800 p-2 flex gap-2 border  rounded-lg">
+                      <GiWineGlass className="size-5 mt-3"/>
+                      <div>
+                        <p className=" text-lg font-semibold">Alcohol</p>
+                        <p className={`flex gap-1 `}>{patient.lifestyle?.alcohol ? "Yes" : "No"}</p>
+                      </div>
+                    </div>
+                    <div className="bg-teal-50 text-teal-800 p-2 flex gap-2 border  rounded-lg">
+                      <FaDumbbell className="size-5 mt-3"/>
+                      <div>
+                        <p className=" text-lg font-semibold">Exercise</p>
+                        <p className={`flex gap-1 `}>{patient.lifestyle?.exercise ? `${patient.lifestyle?.exercise}` : "No exercise"}</p>
+                      </div>
+                    </div> */}
+                    <div className="bg-green-50 border border-green-200 text-green-800 p-2 flex gap-2 border  rounded-lg">
+                      <LuCigarette className="size-5 mt-3"/>
+                      <div>
+                        <p className=" text-lg font-semibold flex">Smoking</p>
+                        <p className={`flex gap-1 `}>{patient.lifestyle?.smoking ? "Yes" : "No"}</p>
+                      </div>
+                    </div>
+                    <div className="bg-sky-50 border border-sky-200 text-sky-800 p-2 flex gap-2 border  rounded-lg">
+                      <GiWineGlass className="size-5 mt-3"/>
+                      <div>
+                        <p className=" text-lg font-semibold">Alcohol</p>
+                        <p className={`flex gap-1 `}>{patient.lifestyle?.alcohol ? "Yes" : "No"}</p>
+                      </div>
+                    </div>
+                    <div className="bg-green-50 border border-green-200 text-green-800 p-2 flex gap-2 border  rounded-lg">
+                      <FaDumbbell className="size-5 mt-3"/>
+                      <div>
+                        <p className=" text-lg font-semibold">Exercise</p>
+                        <p className={`flex gap-1 `}>{patient.lifestyle?.exercise ? `${patient.lifestyle?.exercise}` : "No exercise"}</p>
+                      </div>
+                    </div>
+                  {/* <Detail label="Smoking" value={patient.lifestyle?.smoking ? "Yes" : "No"} />
                   <Detail label="Alcohol" value={patient.lifestyle?.alcohol ? "Yes" : "No"} />
-                  <Detail label="Exercise" value={patient.lifestyle?.exercise} />
+                  <Detail label="Exercise" value={patient.lifestyle?.exercise} /> */}
                   </div>
               </div>
 
@@ -269,7 +430,7 @@ export default function PatientProfile() {
               </div>
 
               {/* Documents */}
-              {patient.documents && patient.documents.length > 0 && (
+              {/* {patient.documents && patient.documents.length > 0 && (
                   <div>
                   <h3 className="font-semibold text-lg mb-3">Documents</h3>
                   <div className="bg-white border-l-2 border-teal-500 shadow rounded-xl p-6 text-sm">
@@ -298,7 +459,52 @@ export default function PatientProfile() {
                       </ul>
                   </div>
                   </div>
-              )}
+              )} */}
+            {
+              patient.documents &&
+              patient.documents.length > 0 && (
+                <div>
+                  <h3 className="font-semibold text-lg mb-3">Documents</h3>
+                  <div className="space-y-3">
+                    {patient.documents.map((doc) => (
+                      <div
+                        key={doc.id}
+                        className="flex items-center justify-between bg-white rounded-xl border-l-2 border-teal-500 shadow-sm p-4 hover:shadow-md transition"
+                      >
+                        {/* Left side: Icon + file info */}
+                        <div className="flex items-center gap-3">
+                          <div className="bg-teal-100 text-teal-600 p-3 rounded-lg">
+                            <HiOutlineDocumentText size={20} />
+                          </div>
+                          <div>
+                            <p className="font-medium text-gray-800">{doc.name}</p>
+                            {doc.uploadedAt && (
+                              <p className="text-xs text-gray-500">
+                                Uploaded on{" "}
+                                {format(new Date(doc.uploadedAt), "M/d/yyyy")}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Download icon */}
+                        {doc.url && (
+                          <a
+                            href={doc.url}
+                            download
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-teal-600 hover:text-teal-700 transition"
+                          >
+                            <HiOutlineArrowDownTray size={20} />
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
+            }              
           </div>
         </div> 
         <Sheet open={open} onOpenChange={setOpen}>
@@ -461,16 +667,21 @@ function SelectField({ label, value, onChange, options }: { label: string; value
   );
 }
 
-function Detail({ label, value }: { label: string; value?: string }) {
+function Detail({ label, value, style }: { label: string; value?: string, style?:string }) {
   return (
     <div>
       <p className="text-gray-500">{label}</p>
-      <p className="font-medium">{value || "N/A"}</p>
+      <p className={`font-medium ${style}`}>{value || "N/A"}</p>
     </div>
   );
 }
 
+
+
 function VitalCard({
+  icon: Icon,
+  color,
+  bg,
   title,
   value,
   unit,
@@ -478,69 +689,30 @@ function VitalCard({
   statusColor
 }: {
   title: string;
+  color: string;
+  bg: string;
   value: string;
   unit: string;
+  icon: IconType;
   status: string;
   statusColor: string;
 }) {
   return (
-    <div className="bg-white border-l-2 border-teal-500 hover:scale-105 shadow hover:shadow-lg hover:shadow-teal-100 cursor-pointer transition p-4 rounded-xl shadow text-center">
-      <p className="text-gray-500">{title}</p>
+    <div className={` border-l-4 hover:border-l-16 border-${color}-500 ${bg}  hover:scale-103 shadow hover:shadow-lg  cursor-pointer transition p-4 rounded-xl text-center`}>
+      <div className="flex items-center justify-center gap-2 text-gray-500 mb-2">
+        <Icon className={`text-${color}-500 text-lg`} />
+        <span className="font-medium">{title}</span>
+      </div>
       <h4 className="text-xl font-bold">
-        {value} <span className="text-sm font-normal">{unit}</span>
+        {value}{" "}
+        <span className="text-sm font-normal text-gray-500">{unit}</span>
       </h4>
       <p className={`text-xs mt-1 ${statusColor}`}>{status}</p>
     </div>
   );
 }
 
-function Th({ children }: { children: React.ReactNode }) {
-  return (
-    <th className="px-4 py-2 text-left text-gray-600 font-medium">{children}</th>
-  );
-}
 
-function HistoryRow({
-  date,
-  diagnosis,
-  severity,
-  visits,
-  status
-}: {
-  date: string;
-  diagnosis: string;
-  severity: "High" | "Low";
-  visits: number;
-  status: string;
-}) {
-  return (
-    <tr className="border-t">
-      <td className="px-4 py-2">{date}</td>
-      <td className="px-4 py-2">{diagnosis}</td>
-      <td className="px-4 py-2">
-        <span
-          className={`px-2 py-1 rounded-full text-xs ${
-            severity === "High"
-              ? "bg-red-100 text-red-600"
-              : "bg-green-100 text-green-600"
-          }`}
-        >
-          {severity}
-        </span>
-      </td>
-      <td className="px-4 py-2">{visits}</td>
-      <td className="px-4 py-2">
-        <span
-          className={`px-2 py-1 rounded-full text-xs ${
-            status === "Under Treatment"
-              ? "bg-orange-100 text-orange-600"
-              : "bg-green-100 text-green-600"
-          }`}
-        >
-          {status}
-        </span>
-      </td>
-      <td className="px-4 py-2 text-blue-600 cursor-pointer">Download</td>
-    </tr>
-  );
-}
+
+
+

@@ -44,6 +44,7 @@ const Navbar = ()=>{
                                     <Link href="/doctor/appointments" className={` hover:text-teal-600  hover:bg-muted   rounded py-1 px-1 ${pathname.includes('doctor/appointments') && "bg-white text-teal-500 font-semibold text-lg"}`}>📅 Appointments</Link>
                                     <Link href="/doctor/patients" className={`hover:text-teal-600  hover:bg-muted   rounded py-1 px-1 ${pathname.includes('doctor/patients') && "bg-white text-teal-500 font-semibold text-lg"}`}>👥 Patient List</Link>
                                     <Link href="/doctor/prescriptions" className={` hover:text-teal-600  hover:bg-muted   rounded py-1 px-1 ${pathname.includes('doctor/prescriptions') && "bg-white text-teal-500 font-semibold text-lg"}`}>📝 Prescriptions</Link>
+                                    <Link href="/doctor/feedbacks" className={` hover:text-teal-600  hover:bg-muted   rounded py-1 px-1 ${pathname.includes('doctor/feedbacks') && "bg-white text-teal-500 font-semibold text-lg"}`}>🎗️ Feedbacks</Link>
                                     <Link href="/doctor/profile" className={` hover:text-teal-600  hover:bg-muted   rounded py-1 px-1 ${pathname.includes('doctor/profile') && "bg-white text-teal-500 font-semibold text-lg"}`}>🩺 Profile</Link>
                                 </div>
                             </div>

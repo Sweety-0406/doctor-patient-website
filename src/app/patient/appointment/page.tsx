@@ -14,12 +14,8 @@ import toast from "react-hot-toast";
 export default function AppointmentsPage() {
     const [activeTab, setActiveTab] = useState<"pending" | "approved" | "rejected" | "completed" | "cancelled">("approved");
     const[appointments, setAppointments] = useState<Appointment[]>([])
-    const [open, setOpen] = useState(false);
     const { patient, loading } = usePatientAuth();
     const router = useRouter()
-    const[title, setTitle] = useState("")
-    const[description, setDescription] = useState("")
-    const[imageSrc, setImageSrc] = useState("")
 
 
     useEffect(() => { 
@@ -72,7 +68,7 @@ export default function AppointmentsPage() {
                 {filteredAppointments.length ==  0 ? (
                     <NoAppointmentCard />
                 ):(
-                    <div className="mt-4  grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="mt-4  grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                         {filteredAppointments.map((appointment) => (
                         <AppointmentCard key={appointment.id} data={appointment} onCancel={handleCancel}  onReschedule={updateAppointment}/>
                         ))}

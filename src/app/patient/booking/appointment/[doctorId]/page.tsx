@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { getDoctorById, postAppointment } from "@/lib/api";
+import { addPatientIfNotExists, getDoctorById, postAppointment } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import toast from "react-hot-toast";
@@ -88,7 +88,7 @@ export default function BookingAppointmentPage() {
     };
 
     const patientListPayload={
-      id: crypto.randomUUID(),
+      id: crypto.randomUUID(), 
       doctorId: doctorId as string,
       patientId: String(patient?.id),
       createdAt: new Date().toISOString(),
@@ -105,6 +105,7 @@ export default function BookingAppointmentPage() {
     
     const res = await postAppointment(payload);
     if (res.ok) {
+      await addPatientIfNotExists(patientListPayload)
       toast.success("Appointment booked successfully");
       setFormData(initialValue);
       router.push("/patient/appointment");
