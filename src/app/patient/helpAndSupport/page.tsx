@@ -7,6 +7,8 @@ import { usePatientAuth } from "@/context/patientAuthContext";
 import { FaPhoneVolume, FaWhatsapp } from "react-icons/fa6";
 import { IoIosMail } from "react-icons/io";
 import { BsChatDots } from "react-icons/bs";
+import LoaderSection from "@/components/loader";
+import ErrorSection from "@/components/error";
 
 const faqs = [
   {
@@ -31,7 +33,11 @@ export default function HelpAndSupportPage() {
     }
   }, [loading, patient]);
 
-  if (loading) return <div>Loading...</div>;
+  if (loading )
+    return <LoaderSection />;
+
+  if ( !patient)
+    return <ErrorSection />;
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">

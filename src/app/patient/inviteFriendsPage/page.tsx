@@ -37,7 +37,6 @@ export default function InviteFriendsPage() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* ✅ Fixed Back Button */}
 
       {/* Header */}
       <div className="bg-teal-500 absolute w-full h-[32vh] text-white text-center py-8 px-4">

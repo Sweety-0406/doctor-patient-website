@@ -123,7 +123,7 @@ export default function PatientProfile() {
               <p className="text-gray-500">{patient.email}</p>
               <Button onClick={() => { setEditData(patient); setOpen(true); }} className="mt-3 flex gap-1 hover:scale-105 transition" variant="teal">
                 <BiEditAlt />  Edit Profile
-              </Button>
+              </Button> 
             </div>
 
             {/* Right: Patient Details */}
@@ -279,60 +279,6 @@ export default function PatientProfile() {
               <div >
                   <h3 className="font-semibold text-lg mb-3">Medical Information</h3>
                   <div className="bg-white border-l-2 border-teal-500 shadow rounded-xl px-4 py-4 grid grid-cols-1  gap-4 text-sm">
-                    {/* <div className="bg-teal-50 text-teal-800 p-2 border  rounded-lg">
-                      <p className=" text-lg font-semibold">Allergies</p>
-                      <ul className="ml-2">
-                        {patient.allergies?.map((a:string,i:number)=>(
-                          <li key={i} className={`flex gap-1 `}><GoDotFill className="mt-1" />{a}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="bg-teal-50 text-teal-800 p-2 border  rounded-lg">
-                      <p className=" text-lg font-semibold">Chronic Conditions</p>
-                      <ul className="ml-2">
-                        {patient.chronicConditions?.map((a:string,i:number)=>(
-                          <li key={i} className={`flex gap-1 `}><GoDotFill className="mt-1" />{a}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="bg-teal-50 text-teal-800 p-2 border  rounded-lg">
-                      <p className=" text-lg font-semibold">Current Medications</p>
-                      <ul className="ml-2">
-                        {patient.currentMedications?.map((a:string,i:number)=>(
-                          <li key={i} className={`flex gap-1 `}><GoDotFill className="mt-1" />{a}</li> 
-                        ))}
-                      </ul>
-                    </div> */}
-{/* 
-
-
-                    <div className="bg-red-50 text-red-800 p-2 border border-red-500 rounded-lg">
-                      <p className=" text-lg font-semibold">Allergies</p>
-                      <ul className="ml-2">
-                        {patient.allergies?.map((a:string,i:number)=>(
-                          <li key={i} className={`flex gap-1 `}><GoDotFill className="mt-1" />{a}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="bg-yellow-50 text-yellow-800 p-2 border border-yellow-500 rounded-lg">
-                      <p className=" text-lg font-semibold">Chronic Conditions</p>
-                      <ul className="ml-2">
-                        {patient.chronicConditions?.map((a:string,i:number)=>(
-                          <li key={i} className={`flex gap-1 `}><GoDotFill className="mt-1" />{a}</li>
-                        ))}
-                      </ul>
-                    </div>
-                    <div className="bg-green-50 text-green-800 p-2 border border-green-500 rounded-lg">
-                      <p className=" text-lg font-semibold">Current Medications</p>
-                      <ul className="ml-2">
-                        {patient.currentMedications?.map((a:string,i:number)=>(
-                          <li key={i} className={`flex gap-1 `}><GoDotFill className="mt-1" />{a}</li> 
-                        ))}
-                      </ul>
-                    </div> */}
-
-
-
                     <div className="bg-green-50 text-green-800 p-2 border border-green-200 rounded-lg">
                       <p className=" text-lg font-semibold">Allergies</p>
                       <ul className="ml-2">

@@ -58,26 +58,6 @@ export default function StatusIndicator({ status }: StatusIndicatorProps) {
       <span className={`text-sm font-semibold px-2 py-1  border ${border} rounded-full ${color} ${textColor}`}>
         {status.charAt(0).toUpperCase() + status.slice(1)}
       </span>
-
-      {/* Circle chain */}
-      {/* <div className="flex items-center w-full w-xs">
-        {[0, 1, 2].map((i) => (
-          <div key={i} className="flex items-center w-full">
-            <div
-              className={`size-3 rounded-full ${
-                i < filled ? color : "bg-gray-300"
-              }`}
-            />
-            {i < 2 && (
-              <div
-                className={`h-[2px] w-full ${
-                  i < filled - 1 ? color : "bg-gray-300"
-                }`}
-              />
-            )}
-          </div>
-        ))}
-      </div> */}
     </div>
   );
 }

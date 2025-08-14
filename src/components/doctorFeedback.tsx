@@ -85,7 +85,7 @@ export const StatCard: React.FC<StatCardProps> = ({
       animate={{ opacity: 1, y: 0 }}
       transition={{
         duration: 0.4,
-        delay: index * 0.1, // stagger effect
+        delay: index * 0.1, 
         ease: "easeOut",
       }}
       whileHover={{
@@ -149,7 +149,7 @@ const FeedbackCard: React.FC<{ feedback: FeedbackItem; onAction: (action: string
             </div>
           <div>
             <h3 className="font-semibold text-gray-800">
-              { feedback.patientName}
+              { feedback.patientName.charAt(0).toUpperCase() + feedback.patientName.slice(1)}
             </h3>
             <p className="text-sm text-gray-500">
               {feedback.appointment.diagnosis} • {new Date(feedback.appointment.createdAt).toLocaleDateString()}
@@ -158,9 +158,6 @@ const FeedbackCard: React.FC<{ feedback: FeedbackItem; onAction: (action: string
         </div>
         
         <div className="flex items-center gap-2">
-          {/* <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getPriorityColor(feedback.priority)}`}>
-            {feedback.priority.charAt(0).toUpperCase() + feedback.priority.slice(1)}
-          </span> */}
           <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(feedback.status)}`}>
             {feedback.status.charAt(0).toUpperCase() + feedback.status.slice(1)}
           </span>
@@ -215,7 +212,7 @@ const FeedbackCard: React.FC<{ feedback: FeedbackItem; onAction: (action: string
 
       {/* Feedback Content */}
       <div className="mb-4">
-        <p className="text-gray-700 leading-relaxed">{feedback.feedback}</p>
+        <p className="text-gray-500 text-sm leading-relaxed font-serif italic">{feedback.feedback}</p>
       </div>
 
       {/* Footer Actions */}
@@ -233,13 +230,6 @@ const FeedbackCard: React.FC<{ feedback: FeedbackItem; onAction: (action: string
             <Eye className="w-4 h-4" />
             View Details
           </button>
-          {/* <button
-            onClick={() => onAction('reply', feedback.id)}
-            className="px-3 cursor-pointer py-1.5 text-green-600 hover:bg-green-50 rounded-lg text-sm font-medium transition-colors flex items-center gap-1"
-          >
-            <Reply className="w-4 h-4" />
-            Reply
-          </button> */}
         </div>
       </div>
     </div>
@@ -321,7 +311,6 @@ function calculateDetailedFeedbackStats(feedbacks: FeedbackItem[]) {
 
 
 function getRatingDistribution(feedbacks: FeedbackItem[]) {
-  // Initialize counts as string keys so it matches your expected output format
   const counts: Record<'1' | '2' | '3' | '4' | '5', number> = {
     '1': 0,
     '2': 0,
@@ -382,7 +371,7 @@ function FeedbackList({
     setHasMore(visibleCount < filteredFeedbacks.length);
   }, [visibleCount, filteredFeedbacks.length]);
 
-  // Reset when filteredFeedbacks changes (e.g., due to filtering)
+  // Reset when filteredFeedbacks changes
   useEffect(() => {
     setVisibleCount(itemsPerPage);
     setIsLoading(false);
@@ -393,7 +382,6 @@ function FeedbackList({
 
     setIsLoading(true);
     
-    // Simulate loading delay for better UX
     await new Promise(resolve => setTimeout(resolve, loadingDelay));
     
     setVisibleCount(prev => {
@@ -404,7 +392,6 @@ function FeedbackList({
     setIsLoading(false);
   }, [isLoading, hasMore, loadingDelay, itemsPerPage, filteredFeedbacks.length]);
 
-  // Intersection Observer setup
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -438,7 +425,6 @@ function FeedbackList({
 
   const visibleFeedbacks = filteredFeedbacks.slice(0, visibleCount);
 
-  // Show message when no feedbacks available
   if (filteredFeedbacks.length === 0) {
     return (
       <div className="text-center py-12">
@@ -552,9 +538,6 @@ const DoctorFeedback = ({doctorId}:DoctorDashboardProps) => {
       { category: "Overall Experience", count: stats.ratings.overall.count, avgRating: stats.ratings.overall.average },
       { category: "Product/Treatment", count: stats.ratings.quality.count, avgRating: stats.ratings.quality.average }
     ]
-    const handleAction = (action: string, id: string) => {
-      console.log(`Action: ${action} on feedback: ${id}`);
-    };
 
   const filterFeedbacks = () => {
     let filtered = feedbacks;
@@ -564,7 +547,6 @@ const DoctorFeedback = ({doctorId}:DoctorDashboardProps) => {
       filtered = filtered.filter(fb => 
         fb.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         fb.feedback.toLowerCase().includes(searchTerm.toLowerCase()) 
-        // fb.appointmentType.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -619,12 +601,6 @@ const DoctorFeedback = ({doctorId}:DoctorDashboardProps) => {
               <h1 className="text-3xl font-bold text-gray-800">Patient Experience Insights </h1>
               <p className="text-gray-600 mt-1">View, analyze, and address patient feedback to improve care quality.</p>
             </div>
-            {/* <div className="flex items-center gap-3">
-              <button className="flex items-center gap-2 px-4 py-2 bg-teal-500 cursor-pointer text-white rounded-lg hover:bg-teal-600 transition-colors">
-                <Download className="w-4 h-4" />
-                Export Report
-              </button>
-            </div> */}
           </div>
         </div>
       </div>
@@ -689,7 +665,6 @@ const DoctorFeedback = ({doctorId}:DoctorDashboardProps) => {
                   </div>
                 </div>
               ))}
-              {/* <CategoryBarChart data={analyticsData.categoryBreakdown} /> */}
             </div>
           </div>
         </div>

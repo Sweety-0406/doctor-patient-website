@@ -15,6 +15,8 @@ import {
 import toast from "react-hot-toast";
 import { generateHalfHourSlots } from "@/lib/utils";
 import PrescriptionForm, { PrescriptionFormValues } from "@/components/prescriptionForm";
+import LoaderSection from "@/components/loader";
+import ErrorSection from "@/components/error";
 
 export default function AppointmentsPage() {
   const router = useRouter();
@@ -123,8 +125,11 @@ export default function AppointmentsPage() {
 
 
 
-  if (loading || !doctor)
-    return <p className="text-center mt-10 text-lg">Loading...</p>;
+  if (loading )
+    return <LoaderSection />;
+
+  if ( !doctor)
+    return <ErrorSection />;
 
   return (
     <div className="p-6 max-h-screen pt-24 lg:pt-4 overflow-y-scroll bg-gray-50 min-h-screen">

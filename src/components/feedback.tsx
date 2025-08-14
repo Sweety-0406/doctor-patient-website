@@ -25,98 +25,7 @@ import { FaArrowLeftLong, FaRegPenToSquare } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
-// Custom Modal Component (replacing shadcn Dialog)
 
-
-// TypeScript interfaces based on your data structure
-interface AppointmentDetail {
-  id: string;
-  doctorId: string;
-  patientId: string;
-  doctorImage: string;
-  doctorName: string;
-  patientImage: string;
-  status: string;
-  patient: string;
-  gender: string;
-  age: string;
-  diagnosis: string;
-  phone: string;
-  address: string;
-  blood: string;
-  triage: string;
-  date: string;
-  time: string;
-  payment: string;
-  rating: number;
-  isPrescriptionAvailable: boolean;
-  createdAt: string;
-}
-
-interface FeedbackDetail {
-  id: string;
-  appointment: AppointmentDetail;
-  doctorId: string;
-  patientId: string;
-  appointmentId: string;
-  patientName: string;
-  patientEmail: string;
-  ratings: {
-    overall: number;
-    service: number;
-    quality: number;
-    communication: number;
-  };
-  feedback: string;
-  category: string;
-  wouldRecommend: boolean;
-  submittedAt: string;
-  status: string;
-}
-
-// Sample data based on your structure
-const sampleFeedbackDetail: FeedbackDetail = {
-  id: "b0a4d3e5-80b3-457f-bfd0-54cb2b33bde6",
-  appointment: {
-    id: "ba861f40-cb99-43c6-af8f-05f82bcd9508",
-    doctorId: "680",
-    patientId: "0121",
-    doctorImage: "/images/download2.jpg",
-    doctorName: "Dr. Aarti Sharma",
-    patientImage: "/images/user.jpg",
-    status: "completed",
-    patient: "riya shah",
-    gender: "Female",
-    age: "23",
-    diagnosis: "health issues",
-    phone: "9876543690",
-    address: "Kolkata",
-    blood: "AB+",
-    triage: "Non Urgent",
-    date: "2025-08-09",
-    time: "11:00 AM - 11:30 AM",
-    payment: "Paid",
-    rating: 3,
-    isPrescriptionAvailable: true,
-    createdAt: "2025-08-04T15:35:00.000Z"
-  },
-  doctorId: "680",
-  patientId: "0121",
-  appointmentId: "ba861f40-cb99-43c6-af8f-05f82bcd9508",
-  patientName: "riya",
-  patientEmail: "riya@gmail.com",
-  ratings: {
-    overall: 3,
-    service: 4,
-    quality: 5,
-    communication: 5
-  },
-  feedback: "Doctors are great. They helped me alot.",
-  category: "overall",
-  wouldRecommend: true,
-  submittedAt: "2025-08-13T11:47:42.285Z",
-  status: "new"
-};
 
 // Star Rating Display Component
 const StarRatingDisplay: React.FC<{ rating: number; size?: 'sm' | 'md' | 'lg' }> = ({ rating, size = 'md' }) => {
@@ -209,7 +118,6 @@ const InfoCard: React.FC<{ title: string; children: React.ReactNode; icon: React
   </div>
 );
 
-// getFeedbackById
 interface FeedbackDetailsModalProps{
     feedbackData:FeedbackItem
 }
@@ -365,7 +273,7 @@ const FeedbackDetailsModal = ({feedbackData}:FeedbackDetailsModalProps) => {
                     <span className="text-gray-500 text-sm  tracking-wide">
                     Appointment ID
                     </span>
-                    <p className="font-mono text-sm bg-gray-50 px-3 py-1 rounded-lg border">
+                    <p className="font-mono text-sm bg-gray-200 px-3 py-1 rounded-lg ">
                     {feedbackData.appointment.id}
                     </p>
                 </div>
@@ -529,10 +437,6 @@ const FeedbackDetailsModal = ({feedbackData}:FeedbackDetailsModalProps) => {
 
             {/* Footer Actions */}
             <div className="flex justify-end gap-3 pt-4 mt-4 border-t border-gray-200">
-                {/* <button className="px-4 cursor-pointer py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2">
-                  <MessageSquare className="w-4 h-4 mt-1" />
-                  Reply to Patient
-                </button> */}
                 <button onClick={()=>statusHandler("reviewed")} className="px-4 cursor-pointer py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition-colors flex items-center gap-2">
                   <FaRegPenToSquare className="w-4 h-4"/>
                   Mark as Reviewed

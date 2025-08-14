@@ -7,7 +7,7 @@ import type { ChartConfig } from "@/components/ui/chart";
 
 interface MonthlyTrend {
   month: string;
-  rating: number; // 1–5
+  rating: number; 
 }
 
 export function RatingTrendsChart({ data }: { data: MonthlyTrend[] }) {

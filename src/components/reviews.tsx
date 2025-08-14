@@ -136,7 +136,6 @@ const RatingFeedback = ({ patientId, doctorId, appointmentId, mode = 'create' }:
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isEditMode, setIsEditMode] = useState<boolean>(mode === 'edit');
 
-  // Function to fetch existing feedback
   const fetchExistingFeedback = async () => {
     setIsLoading(true);
     try {
@@ -171,12 +170,10 @@ const RatingFeedback = ({ patientId, doctorId, appointmentId, mode = 'create' }:
   };
 
 
-  // Load existing feedback on component mount if in edit mode or auto-detect
   useEffect(() => {
     if (mode === 'edit') {
       fetchExistingFeedback();
     } else {
-      // Auto-detect if feedback exists
       fetchExistingFeedback();
     }
   }, [appointmentId, patientId, mode]);
@@ -200,7 +197,6 @@ const RatingFeedback = ({ patientId, doctorId, appointmentId, mode = 'create' }:
       
       if (Array.isArray(appt)) {
         if (isEditMode && existingFeedback) {
-          // Update existing feedback
           const updatedPayload = {
             ...existingFeedback,
             patientName: formData.name,
@@ -209,8 +205,8 @@ const RatingFeedback = ({ patientId, doctorId, appointmentId, mode = 'create' }:
             feedback: formData.feedback,
             category: formData.category,
             wouldRecommend: formData.wouldRecommend,
-            submittedAt: new Date().toISOString(), // Update submission time
-            status: 'new' as "new" | "reviewed" | "responded" // Reset status for review
+            submittedAt: new Date().toISOString(),
+            status: 'new' as "new" | "reviewed" | "responded" 
           };
 
           const res = await updateFeedback(existingFeedback.id, updatedPayload);
@@ -221,7 +217,6 @@ const RatingFeedback = ({ patientId, doctorId, appointmentId, mode = 'create' }:
             toast.error("Failed to update feedback");
           }
         } else {
-          // Create new feedback
           const payload = {
             id: crypto.randomUUID(),
             appointment: appt[0],
@@ -254,37 +249,6 @@ const RatingFeedback = ({ patientId, doctorId, appointmentId, mode = 'create' }:
       toast.error("An error occurred while processing your feedback");
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const toggleMode = () => {
-    if (!isEditMode && existingFeedback) {
-      // Switch to edit mode
-      setFormData({
-        name: existingFeedback.patientName,
-        email: existingFeedback.patientEmail,
-        rating: existingFeedback.ratings,
-        feedback: existingFeedback.feedback,
-        category: existingFeedback.category,
-        wouldRecommend: existingFeedback.wouldRecommend
-      });
-      setIsEditMode(true);
-    } else {
-      // Switch to create mode
-      setFormData({
-        name: '',
-        email: '',
-        rating: {
-          overall: 0,
-          service: 0,
-          quality: 0,
-          communication: 0
-        },
-        feedback: '',
-        category: 'overall',
-        wouldRecommend: false
-      });
-      setIsEditMode(false);
     }
   };
 
@@ -327,29 +291,6 @@ const RatingFeedback = ({ patientId, doctorId, appointmentId, mode = 'create' }:
             Your feedback has been {isEditMode ? 'updated' : 'submitted'} successfully. We appreciate your time and input!
           </p>
           <div className="flex gap2 w-full">
-            {/* <Button
-              onClick={() => {
-                setIsSubmitted(false);
-                if (!isEditMode) {
-                  setFormData({
-                    name: '',
-                    email: '',
-                    rating: {
-                      overall: 0,
-                      service: 0,
-                      quality: 0,
-                      communication: 0
-                    },
-                    feedback: '',
-                    category: 'overall',
-                    wouldRecommend: false
-                  });
-                }
-              }}
-              className="flex-1 bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-700 cursor-pointer transition-colors"
-            >
-              {isEditMode ? 'Edit Again' : 'Submit Another Review'}
-            </Button> */}
             <Button
               onClick={() => router.back()}
               className="flex-1 bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-700 cursor-pointer transition-colors"
@@ -371,15 +312,6 @@ const RatingFeedback = ({ patientId, doctorId, appointmentId, mode = 'create' }:
             <h1 className="text-4xl font-bold text-teal-700">
               {isEditMode ? 'Edit Your Feedback' : 'Rate Your Experience'}
             </h1>
-            {/* {existingFeedback && (
-              <Button
-                onClick={toggleMode}
-                className="bg-teal-100 text-teal-700 hover:bg-teal-200 px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-              >
-                <Edit className="w-4 h-4" />
-                {isEditMode ? 'Create New' : 'Edit Existing'}
-              </Button>
-            )} */}
           </div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             {isEditMode 

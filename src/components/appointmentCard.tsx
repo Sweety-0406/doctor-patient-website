@@ -1,6 +1,8 @@
+
+
 "use client";
 
-import { Appointment, FeedbackItem } from "@/app/types";
+import { Appointment } from "@/app/types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaExclamation } from "react-icons/fa";
@@ -11,18 +13,21 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog";
-import RatingComponent from "./rating";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { generateHalfHourSlots } from "@/lib/utils";
-import { getFeedbacksByPatient, getPrescriptionsByPatient, rescheduleAppointment } from "@/lib/api";
+import { getFeedbacksByPatient, rescheduleAppointment } from "@/lib/api";
 import toast from "react-hot-toast";
-import RatingFeedback from "./reviews";
 import { LuMessageSquareText, LuNotepadText } from "react-icons/lu";
-import { formatDistanceToNow, differenceInHours } from "date-fns";
-import { Pencil } from "lucide-react";
-
+import { 
+  Calendar, 
+  Clock, 
+  CreditCard, 
+  Hash, 
+  CalendarClock,
+  Stethoscope
+} from "lucide-react";
 
 export default function AppointmentCard({
   data,
@@ -36,29 +41,29 @@ export default function AppointmentCard({
   const isRejected = data.status === "rejected";
   const isCancelled = data.status === "cancelled";
   const isCompleted = data.status === "completed";
+  const isPending = data.status === "pending";
+  const isApproved = data.status === "approved";
+  
   const router = useRouter();
   const [newDate, setNewDate] = useState(data.date);
   const [newTime, setNewTime] = useState(data.time);
-  const timeSlots = generateHalfHourSlots(8,20)
+  const timeSlots = generateHalfHourSlots(8, 20);
 
   const [open, setOpen] = useState(false);
-  const [openFeedback, setOpenFeedback] = useState(false);
-  const [showRescheduleModal, setShowRescheduleModal] = useState(false)
-  const [reason, setReason] = useState(""); 
-  const [feedbacks, setFeedbacks] = useState<FeedbackItem[]>([])
-  const [isEdit, setIsEdit] = useState(false)
+  const [showRescheduleModal, setShowRescheduleModal] = useState(false);
+  const [reason, setReason] = useState("");
+  const [isEdit, setIsEdit] = useState(false);
 
-  const reshudleSumbitHandler = async (id: string, date:string, time:string)=>{
+  const reshudleSumbitHandler = async (id: string, date: string, time: string) => {
     const res = await rescheduleAppointment(id, date, time);
-    if(res.ok ){
-      toast.success("Appointment reshudled successfully")
+    if (res.ok) {
+      toast.success("Appointment rescheduled successfully");
       setShowRescheduleModal(false);
       onReschedule(id, date, time);
-    }else{
-      toast.error("Failed to reschedule the appointment.")
+    } else {
+      toast.error("Failed to reschedule the appointment.");
     }
-  }
-
+  };
 
   useEffect(() => {
     if (data?.patientId && data?.id) {
@@ -67,13 +72,9 @@ export default function AppointmentCard({
         console.log("res", res[0]);
 
         if (Array.isArray(res) && res.length > 0) {
-          setFeedbacks(res);
-
-          // Check if first feedback is less than 24 hours old
           const submittedTime = new Date(res[0].submittedAt).getTime();
           const now = Date.now();
           const diffHours = (now - submittedTime) / (1000 * 60 * 60);
-
           setIsEdit(diffHours < 24);
         } else {
           setIsEdit(false);
@@ -84,276 +85,260 @@ export default function AppointmentCard({
   }, [data.patientId, data.id]);
 
 
-
-  // useEffect(() => {
-  //   if(!openFeedback) return;
-  //   console.log("openFeedback:", openFeedback, "data:", data);
-  //   if (openFeedback && data?.patientId && data?.id) {
-  //     const fetchFeedback = async () => {
-  //       const res = await getFeedbacksByPatient(data.patientId, data.id);
-  //       console.log("res2",res)
-  //       if (Array.isArray(res)) {
-  //         setFeedbacks(res);
-  //         setIsEdit(res.length > 0);
-  //       }
-  //     };
-  //     fetchFeedback();
-  //   }
-  // }, [openFeedback]);
-
   return (
-    <div className="border border-teal-500 bg-gradient-to-b from-teal-100 to-white rounded-xl p-4 shadow-sm">
-      <div className="flex items-center space-x-4">
-        <img
-          src={data.doctorImage}
-          alt="Doctor"
-          className="w-16 h-16 rounded-full object-cover"
-        />
-        <div className="flex flex-col w-full">
-          <h2 className="font-semibold">{data.doctorName}</h2>
-          <div className="flex justify-between w-full ">
-            <div>
-              <p className="text-xs text-gray-500">Token no – <span className="font-mono">{data.id}</span></p>
-              <p className="text-xs text-gray-500">
-                {data.date} | <span className="text-blue-500">{data.time}</span>
-              </p>
-              <p className="text-xs text-gray-500">
-                Payment |{" "}
-                <span
-                  className={`${
-                    data.payment === "Paid" ? "text-green-500" : "text-red-500"
-                  }`}
-                >
+    <div className={`relative overflow-hidden bg-white border border-teal-500 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group`}>
+
+      <div className="p-4 py-6">
+        {/* Doctor Information */}
+        <div className="flex items-start space-x-4 mb-6">
+          <div className="relative">
+            <img
+              src={data.doctorImage}
+              alt="Doctor"
+              className="w-20 h-20 rounded-2xl object-cover border-3 border-teal-500 shadow-md"
+            />
+            <div className="absolute -bottom-2 -right-2 bg-teal-500 rounded-full p-1.5">
+              <Stethoscope className="w-4 h-4 text-white" />
+            </div>
+          </div>
+          
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-2">
+              <h2 className="text-xl font-bold text-gray-900 truncate">{data.doctorName}</h2>
+            </div>
+            
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <Hash className="w-4 h-4 text-teal-500" />
+                <span>Token:</span>
+                <span className="font-mono bg-gray-100 px-2 py-0.5 rounded text-xs">
+                  {data.id}
+                </span>
+              </div>
+              
+              <div className="flex items-center gap-2 text-sm text-gray-600">
+                <Calendar className="w-4 h-4 text-blue-500" />
+                <span>{data.date}</span>
+                <Clock className="w-4 h-4 text-purple-500 ml-2" />
+                <span className="font-semibold text-purple-600">{data.time}</span>
+              </div>
+              
+              <div className="flex items-center gap-2 text-sm">
+                <CreditCard className="w-4 h-4 text-green-500" />
+                <span className="text-gray-600">Payment:</span>
+                <span className={`font-semibold px-2 py-0.5 rounded-full text-xs ${
+                  data.payment === "Paid" 
+                    ? "text-green-700 bg-green-100" 
+                    : "text-red-700 bg-red-100"
+                }`}>
                   {data.payment}
                 </span>
-              </p>
+              </div>
             </div>
-            {(data.status == "pending" || data.status == "approved") && (
-              <div onClick={()=>{
-                setShowRescheduleModal(true)
-              }} className="top-1 cursor-pointer">
-                🗓️
-              </div>    
-            ) }
+
+            {/* Reschedule Option */}
+            {(isPending || isApproved) && (
+              <button
+                onClick={() => setShowRescheduleModal(true)}
+                className="mt-3 cursor-pointer hover:underline hover:underline-2  flex items-center gap-2 text-sm text-teal-600 hover:text-teal-800 font-medium transition-colors duration-200"
+              >
+                <CalendarClock className="w-4 h-4" />
+                Reschedule
+              </button>
+            )}
           </div>
-          <p
-            className={`text-xs font-semibold mt-1 ${
-              data.status === "approved" && "text-green-600"
-            } ${data.status === "pending" && "text-yellow-400"} ${
-              data.status === "rejected" && "text-red-600"
-            } ${data.status === "completed" && "text-blue-600"} `}
-          >
-            Consulting | {data.status.toUpperCase()}
-          </p>
-        </div> 
-      </div>
-      {isCompleted && (
-        data.isPrescriptionAvailable ? (
-        <div className="mt-4 flex w-full gap-2">
-          <Button
-            onClick={() => router.push(`/patient/prescription/${data.id}`)}
-            variant="green"
-            className="flex-1 flex items-center gap-1"
-          >
-            <LuNotepadText className="size-4" />
-            View prescription
-          </Button>
-
-          <Button
-            onClick={() =>{
-              if(isEdit){
-                router.push(`/patient/appointment/feedback/${data.doctorId}/${data.id}?mode=edit`)
-              }else{
-                router.push(`/patient/appointment/feedback/${data.doctorId}/${data.id}?mode=create`)
-              }
-            }}
-            variant="blue"
-            className="flex-1 flex items-center gap-1"
-          >
-            <LuMessageSquareText className="size-4 mt-1" />
-            {isEdit? "Edit feedback":"Give feedback"}
-          </Button>
         </div>
-        ) : (
-          <div className="mt-4 text-sm text-red-500 flex gap-1 rounded-lg px-2 "> <FaExclamation className="bg-red-100 p-1 rounded-full size-5" /> No prescription available.</div>
-        )
-      )}
-      {!isCompleted && (
-        <>
-          <button
-            onClick={() => {
-              if (isRejected || isCancelled) {
-                router.push(`/patient/booking/appointment/${data.doctorId}`);
-              } else {
-                setOpen(true);
-              }
-            }}
-            className={`mt-4 w-full text-sm py-2 rounded border cursor-pointer
-          ${
-            isRejected || isCancelled
-              ? "border-gray-300 bg-teal-500 text-gray-700"
-              : "border-red-500 text-white bg-red-500"
-          }`}
-          >
-            {isRejected || isCancelled
-              ? "Book Appointment"
-              : "Cancel Appointment"}
-          </button>
 
-          {/* Cancel Confirmation Modal */}
-          <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Cancel Appointment</DialogTitle>
-              </DialogHeader>
-              <div className="py-4">
-                <p>Are you sure you want to cancel this appointment?</p>
-                <Label className="mt-2 mb-1">Reason for cancellation</Label>
+        {isCompleted && (
+          <div className="space-y-3">
+            {data.isPrescriptionAvailable ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <Button
+                  onClick={() => router.push(`/patient/prescription/${data.id}`)}
+                  className="cursor-pointer bg-gradient-to-r from-teal-500 to-teal-500 hover:from-teal-600 hover:to-teal-600 text-white border-0 rounded-lg py-5 font-semibold shadow-md hover:shadow-lg transition-all duration-300 group"
+                >
+                  <div className="flex items-center gap-1">
+
+                      <LuNotepadText className="w-5 h-5 mt-1" />
+                    <div className="text-left">
+                      <div className="font-semibold">View Prescription</div>
+                    </div>
+                  </div>
+                </Button>
+
+                <Button
+                  onClick={() => {
+                    if (isEdit) {
+                      router.push(`/patient/appointment/feedback/${data.doctorId}/${data.id}?mode=edit`);
+                    } else {
+                      router.push(`/patient/appointment/feedback/${data.doctorId}/${data.id}?mode=create`);
+                    }
+                  }}
+                  variant="blue"
+                  className=" border cursor-pointer border-sky-500  rounded-lg py-5 font-semibold shadow-md hover:shadow-lg transition-all duration-300 group"
+                >
+                  <div className="flex items-center gap-1">
+                      <LuMessageSquareText className="w-5 h-5 mt-1" />
+                    <div className="text-left">
+                      <div className="font-semibold">
+                        {isEdit ? "Edit Feedback" : "Give Feedback"}
+                      </div>
+                    </div>
+                  </div>
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
+                <div className="p-2 bg-red-100 rounded-full">
+                  <FaExclamation className="w-4 h-4 text-red-600" />
+                </div>
+                <div>
+                  <div className="text-sm font-medium text-red-800">No prescription available</div>
+                  <div className="text-xs text-red-600">Please contact your doctor if needed</div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Action Button for Non-Completed Appointments */}
+        {!isCompleted && (
+          <div className="mt-4">
+            <button
+              onClick={() => {
+                if (isRejected || isCancelled) {
+                  router.push(`/patient/booking/appointment/${data.doctorId}`);
+                } else {
+                  setOpen(true);
+                }
+              }}
+              className={`w-full cursor-pointer py-2 px-6 rounded-lg font-semibold text-center transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-[1.02] ${
+                isRejected || isCancelled
+                  ? "bg-gradient-to-r from-teal-500 to-teal-500 hover:from-teal-600 hover:to-teal-600 text-white"
+                  : "bg-gradient-to-r from-red-500 to-red-500 hover:from-red-600 hover:to-red-600 text-white"
+              }`}
+            >
+              {isRejected || isCancelled ? "Book New Appointment" : "Cancel Appointment"}
+            </button>
+          </div>
+        )}
+
+        {/* Cancel Confirmation Modal */}
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogContent className="sm:max-w-md rounded-2xl">
+            <DialogHeader className="pb-4 border-b border-gray-100">
+              <DialogTitle className="text-xl font-bold flex items-center gap-2">
+                Cancel Appointment
+              </DialogTitle>
+            </DialogHeader>
+            <div className="pb-6">
+              <p className="text-gray-600 mb-4">
+                Are you sure you want to cancel this appointment with <strong>{data.doctorName}</strong>?
+              </p>
+              <div className="space-y-2">
+                <Label className="text-sm font-medium text-gray-700">
+                  Reason for cancellation <span className="text-red-500">*</span>
+                </Label>
                 <Input
-                  placeholder="Reason for cancellation"
+                  placeholder="Please provide a reason..."
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
+                  className="rounded-lg border-gray-300 focus:border-red-500 focus:ring-red-500"
                 />
               </div>
-              <DialogFooter className="flex justify-end gap-3">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setOpen(false);
-                    setReason(""); 
-                  }}
-                  className="cursor-pointer"
-                >
-                  Close
-                </Button>
-                <Button
-                  variant="destructive"
-                  disabled={!reason.trim()} 
-                  onClick={async () => {
-                    await onCancel(data.id, reason);
-                    setOpen(false);
-                    setReason(""); 
-                  }}
-                  className="cursor-pointer"
-                >
-                  Yes, Cancel
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-          
-          {showRescheduleModal && (
+            </div>
+            <DialogFooter className="flex justify-end gap-3 pt-4 border-t border-gray-100">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setOpen(false);
+                  setReason("");
+                }}
+                className="rounded-lg cursor-pointer px-6"
+              >
+                Keep Appointment
+              </Button>
+              <Button
+                variant="destructive"
+                disabled={!reason.trim()}
+                onClick={async () => {
+                  await onCancel(data.id, reason);
+                  setOpen(false);
+                  setReason("");
+                }}
+                className="rounded-lg cursor-pointer px-6 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600"
+              >
+                Yes, Cancel
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
-            <Dialog  open={true} onOpenChange={setShowRescheduleModal}>
-              <DialogContent >
-                <DialogHeader className="border-b-2 pb-2 border-teal-600">
-                  <DialogTitle>Reschedule Appointment</DialogTitle>
-                </DialogHeader>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    reshudleSumbitHandler(data.id, newDate, newTime);
-                  }}
-                  className="flex flex-col gap-4"
-                >
-                  <div>
-                    <label className="block mb-1 font-semibold">Select Time Slot</label>
-                    <input
-                      type="date"
-                      value={newDate}
-                      placeholder="new time"
-                      onChange={(e) => setNewDate(e.target.value)}
-                      className="border p-2 rounded"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block mb-1 font-semibold">Select Time Slot</label>
-                    <div className="grid grid-cols-3  gap-2">
+        {/* Reschedule Modal */}
+        {showRescheduleModal && (
+          <Dialog open={true} onOpenChange={setShowRescheduleModal}>
+            <DialogContent className="sm:max-w-lg rounded-2xl">
+              <DialogHeader className="pb-4 border-b border-teal-100">
+                <DialogTitle className="text-xl font-bold flex items-center gap-2">
+                  <CalendarClock className="w-5 h-5 text-teal-500" />
+                  Reschedule Appointment
+                </DialogTitle>
+              </DialogHeader>
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  reshudleSumbitHandler(data.id, newDate, newTime);
+                }}
+                className="space-y-6 py-4"
+              >
+                <div className="space-y-2">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Select Date <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="date"
+                    value={newDate}
+                    onChange={(e) => setNewDate(e.target.value)}
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:border-teal-500 focus:ring-1 focus:ring-teal-500"
+                    required
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Select Time Slot <span className="text-red-500">*</span>
+                  </label>
+                  <div className="grid grid-cols-3 gap-2 max-h-48 overflow-y-auto">
                     {timeSlots.map((slot) => (
-                        <button
+                      <button
                         key={slot}
                         type="button"
                         onClick={() => setNewTime(slot)}
-                        className={`border cursor-pointer hover:bg-teal-500 hover:text-white rounded px-2 py-1 text-sm ${newTime === slot ? 'bg-teal-500 text-white' : ''}`}
-                        >
-                        {slot}
-                        </button>
-                    ))}
-                    </div>
-                  </div>
-                  <button
-                    type="submit"
-                    className="bg-teal-500 cursor-pointer text-white px-4 py-2 rounded hover:bg-teal-600"
-                  >
-                    Confirm Reschedule
-                  </button>
-                </form>
-              </DialogContent>
-            </Dialog>
-          )}
-
-          <Dialog open={openFeedback} onOpenChange={setOpenFeedback}>
-            {/* <DialogTrigger asChild>
-              <Button variant="outline">View Feedback</Button>
-            </DialogTrigger> */}
-            <DialogContent className="max-w-2xl">
-              <DialogHeader>
-                <DialogTitle>Patient Feedback</DialogTitle>
-              </DialogHeader>
-
-              {feedbacks.length === 0 ? (
-                <p className="text-gray-500 text-sm">No feedback found.</p>
-              ) : (
-                <div className="space-y-4">
-                  {feedbacks.map((fb) => {
-                    const hoursDiff = differenceInHours(new Date(), new Date(fb.submittedAt));
-                    const canEdit = hoursDiff < 24;
-
-                    return (
-                      <div
-                        key={fb.id}
-                        className="p-4 border rounded-lg shadow-sm bg-white space-y-2"
+                        className={`border cursor-pointer rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200 hover:scale-105 ${
+                          newTime === slot
+                            ? "bg-teal-500 text-white border-teal-500 shadow-md"
+                            : "border-gray-300 text-gray-700 hover:bg-teal-50 hover:border-teal-300"
+                        }`}
                       >
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <p className="font-semibold">{fb.patientName}</p>
-                            <p className="text-xs text-gray-500">
-                              {formatDistanceToNow(new Date(fb.submittedAt), { addSuffix: true })}
-                            </p>
-                          </div>
-                          {canEdit && (
-                            <Button
-                              size="sm"
-                              variant="secondary"
-                              onClick={() => {
-                                // Call your edit modal or navigate
-                                console.log("Edit feedback", fb.id);
-                              }}
-                            >
-                              <Pencil className="w-4 h-4 mr-1" /> Edit
-                            </Button>
-                          )}
-                        </div>
-
-                        <div className="text-sm text-gray-700">{fb.feedback}</div>
-
-                        <div className="text-xs text-gray-500">
-                          Ratings: ⭐ {fb.ratings.overall}/5 (Service: {fb.ratings.service}, Quality: {fb.ratings.quality}, Communication: {fb.ratings.communication})
-                        </div>
-
-                        <div className="text-xs text-gray-500">Category: {fb.category}</div>
-                        {fb.wouldRecommend && <div className="text-green-600 text-xs">✅ Would recommend</div>}
-                      </div>
-                    );
-                  })}
+                        {slot}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              )}
-            </DialogContent>
-          </Dialog>          
 
-        </>
-      )}
+                <button
+                  type="submit"
+                  className="w-full cursor-pointer bg-gradient-to-r from-teal-500 to-teal-500 hover:from-teal-600 hover:to-teal-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
+                >
+                  Confirm Reschedule
+                </button>
+              </form>
+            </DialogContent>
+          </Dialog>
+        )}
+
+      </div>
     </div>
   );
 }
+

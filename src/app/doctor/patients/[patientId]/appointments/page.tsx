@@ -21,6 +21,8 @@ import { MdDeleteSweep, MdOutlineNoteAdd } from "react-icons/md";
 import { FiDownload } from "react-icons/fi";
 import { CiCalendar } from "react-icons/ci";
 import { LuAlarmClock, LuCalendar, LuNotebookText } from "react-icons/lu";
+import LoaderSection from "@/components/loader";
+import ErrorSection from "@/components/error";
 
 type Medicine = {
     medicineName: string;
@@ -122,7 +124,12 @@ const PatientAppointments = ()=>{
         printWindow.close();
     };
 
-    if (!doctor ) return null;
+
+    if (loading )
+        return <LoaderSection />;
+
+    if ( !doctor)
+        return <ErrorSection />;
 
     return(
         <div className="h-screen">

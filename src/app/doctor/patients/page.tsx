@@ -26,6 +26,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { FaRegUser } from "react-icons/fa";
+import LoaderSection from "@/components/loader";
+import ErrorSection from "@/components/error";
 
 export default function PatientListPage() {
   const { doctor, loading } = useDoctorAuth();
@@ -56,6 +58,13 @@ export default function PatientListPage() {
   const uniquePatients = Array.from(
     new Map(patients.map((p) => [p.patientId, p])).values()
   );
+
+  
+  if (loading )
+    return <LoaderSection />;
+
+  if ( !doctor)
+    return <ErrorSection />;
 
   return (
     <div className="max-h-screen min-h-screen pt-20 lg:pt-0 overflow-y-scroll">

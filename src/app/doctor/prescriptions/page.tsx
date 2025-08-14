@@ -13,6 +13,8 @@ import toast from "react-hot-toast";
 import PrescriptionForm, { PrescriptionFormValues } from "@/components/prescriptionForm";
 import { Button } from "@/components/ui/button";
 import { FullPrescription } from "@/app/types";
+import LoaderSection from "@/components/loader";
+import ErrorSection from "@/components/error";
 
 
 
@@ -94,7 +96,12 @@ export default function PrescriptionPage() {
       createdAt: selectedPrescription.createdAt,
     })) || [];
 
-  if (loading) return <div className="p-10">Loading...</div>;
+
+  if (loading )
+    return <LoaderSection />;
+
+  if ( !doctor)
+    return <ErrorSection />;
 
   return (
     <div className="flex h-screen    overflow-hidden">

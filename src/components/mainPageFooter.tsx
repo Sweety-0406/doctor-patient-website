@@ -1,6 +1,5 @@
 "use client";
 
-import { FaGithub, FaXTwitter, FaLinkedinIn, FaInstagram } from "react-icons/fa6";
 import Image from "next/image";
 export default function Footer() {
   return (

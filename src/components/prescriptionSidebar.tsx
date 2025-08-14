@@ -91,9 +91,9 @@ export default function PrescriptionSidebar({ prescriptions, selectedId, onSelec
         </div>
       </div>
 
-      <div className="md:hidden">
+      <div className="md:hidden z-50 ">
         <Sheet>
-          <SheetTrigger className="bg-teal-500 cursor-pointer size-10  mt-20 fixed w-full text-white">
+          <SheetTrigger className="bg-teal-500 border-t cursor-pointer size-10  mt-20 fixed w-full text-white">
             Click to get all prescriptions
           </SheetTrigger>
 

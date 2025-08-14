@@ -9,6 +9,8 @@ import { getDoctorAppointments, getMyPatientByDoctor } from '@/lib/api';
 import WebsiteFooter from '@/components/websiteFooter';
 import MyCalendar from '@/components/myCalender';
 import Graph from '@/components/graph';
+import ErrorSection from '@/components/error';
+import LoaderSection from '@/components/loader';
 
 export default function DoctorDashboard() {
   const { doctor, loading } = useDoctorAuth();
@@ -38,7 +40,12 @@ export default function DoctorDashboard() {
   };
 
 
-  if (!doctor) return null;
+
+  if (loading )
+    return <LoaderSection />;
+
+  if ( !doctor)
+    return <ErrorSection />;
 
   return (
     <div className="min-h-screen max-h-screen pt-20 lg:pt-0 flex bg-white">

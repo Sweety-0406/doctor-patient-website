@@ -21,6 +21,8 @@ import { MdNotificationsActive } from "react-icons/md";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 import { BsExclamationSquare } from "react-icons/bs";
 import { FaUsersLine } from "react-icons/fa6";
+import LoaderSection from "@/components/loader";
+import ErrorSection from "@/components/error";
 
 
 export default function PatientProfilePage() {
@@ -67,6 +69,11 @@ export default function PatientProfilePage() {
     logout()
     router.push('/')
  }
+   if (loading )
+    return <LoaderSection />;
+
+  if ( !patient)
+    return <ErrorSection />;
 
   return (
     <div className="max-h-screen px-auto  min-h-screen    bg-gray-100">

@@ -2,7 +2,9 @@
 
 import { Appointment } from "@/app/types";
 import AppointmentCard from "@/components/appointmentCard";
+import ErrorSection from "@/components/error";
 import Footer from "@/components/footer";
+import LoaderSection from "@/components/loader";
 import NoAppointmentCard from "@/components/noAppointment";
 import { usePatientAuth } from "@/context/patientAuthContext";
 import { cancelAppointment, getPatientAppointments } from "@/lib/api";
@@ -51,7 +53,11 @@ export default function RecordsPage(){
             )
         );
     };
+    if (loading )
+        return <LoaderSection />;
 
+    if ( !patient)
+        return <ErrorSection />;
     return(
         <div className=" max-h-screen mx-auto lg:mx-10">
             <div className="h-[90vh] overflow-y-scroll p-4">

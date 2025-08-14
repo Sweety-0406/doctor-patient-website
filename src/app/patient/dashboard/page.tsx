@@ -11,6 +11,8 @@ import { IoNotificationsOutline, IoSearchOutline } from 'react-icons/io5';
 import { CiLocationOn } from 'react-icons/ci';
 import { getDoctors } from '@/lib/api';
 import WebsiteFooter from '@/components/websiteFooter';
+import LoaderSection from '@/components/loader';
+import ErrorSection from '@/components/error';
 
 
 export default function PatientDashboard() {
@@ -38,7 +40,11 @@ export default function PatientDashboard() {
       doctor.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-  if (!patient) return null;
+  if (loading )
+    return <LoaderSection />;
+
+  if ( !patient)
+    return <ErrorSection />;
 
   return (
     <div className="max-h-screen  overflow-y-scroll  flex bg-white">

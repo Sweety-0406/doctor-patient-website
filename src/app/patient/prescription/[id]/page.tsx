@@ -8,10 +8,7 @@ import { Doctor, Prescription } from "@/app/types";
 import { PiDotOutlineFill, PiPhoneCallFill } from "react-icons/pi";
 import { MdMarkEmailRead } from "react-icons/md";
 import { useRouter } from "next/navigation";
-import { FiDownload, FiPrinter } from "react-icons/fi";
-import { useReactToPrint } from "react-to-print";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
+import {  FiPrinter } from "react-icons/fi";
 import {
   Table,
   TableBody,
@@ -40,7 +37,6 @@ export default function PatientPrescriptionPage() {
   const [doc, setDoc] = useState<Doctor | null>(null);
   const router = useRouter();
   const printRef = useRef<HTMLDivElement>(null);
-  const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -158,99 +154,6 @@ export default function PatientPrescriptionPage() {
             printWindow.close();
         }, 500);
     };
-
-const handlePrintThenPDF = async () => {
-  if (!printRef.current) return;
-
-  setIsGeneratingPdf(true);
-  
-  try {
-    // 1. Create a hidden iframe
-    const iframe = document.createElement('iframe');
-    iframe.style.position = 'absolute';
-    iframe.style.left = '-9999px';
-    iframe.style.width = '210mm'; // A4 width
-    iframe.style.height = '297mm'; // A4 height
-    document.body.appendChild(iframe);
-
-    // 2. Wait for iframe to load
-    await new Promise<void>((resolve) => {
-      iframe.onload = () => resolve();
-      iframe.src = 'about:blank';
-    });
-
-    const iframeDoc = iframe.contentDocument;
-    if (!iframeDoc) throw new Error("Failed to access iframe document");
-
-    // 3. Add print styles and content
-    iframeDoc.open();
-    iframeDoc.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Prescription</title>
-          <style>
-            @page { size: auto; margin: 0; }
-            body { margin: 20px; -webkit-print-color-adjust: exact; }
-            ${watermarkStyle ? `
-              .watermark {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                font-size: 4rem;
-                color: rgba(0, 0, 0, 0.05);
-                z-index: 0;
-                user-select: none;
-              }
-            ` : ''}
-          </style>
-        </head>
-        <body>
-          ${printRef.current.innerHTML}
-        </body>
-      </html>
-    `);
-    iframeDoc.close();
-
-    // 4. Ensure content is fully rendered
-    await new Promise(resolve => setTimeout(resolve, 500));
-
-    // 5. Use html2canvas on the iframe's body
-    const canvas = await html2canvas(iframeDoc.body, {
-      scale: 2,
-      useCORS: true,
-      logging: true,
-      allowTaint: true,
-      scrollX: 0,
-      scrollY: 0,
-      windowWidth: iframeDoc.documentElement.scrollWidth,
-      windowHeight: iframeDoc.documentElement.scrollHeight,
-      backgroundColor: '#FFFFFF'
-    });
-
-    // 6. Generate PDF
-    const pdf = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4'
-    });
-
-    const imgData = canvas.toDataURL('image/png');
-    const imgWidth = 210; // A4 width in mm
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-    pdf.save(`prescription_${prescription.patientName}.pdf`);
-
-  } catch (error) {
-    console.error("Error generating PDF:", error);
-    alert("Failed to generate PDF. Please try printing and selecting 'Save as PDF' instead.");
-  } finally {
-    // iframe?.parentNode?.removeChild(iframe);
-    setIsGeneratingPdf(false);
-  }
-};
 
 
 
@@ -410,21 +313,6 @@ const handlePrintThenPDF = async () => {
                 >
                 <FiPrinter /> Print
                 </button>
-                {/* <button
-            onClick={handlePrintThenPDF}
-            disabled={isGeneratingPdf}
-            className={`bg-teal-500 cursor-pointer hover:bg-teal-600 text-white px-3 py-1 rounded flex items-center gap-2 text-sm ${
-              isGeneratingPdf ? "opacity-50" : ""
-            }`}
-          >
-            {isGeneratingPdf ? (
-              "Generating..."
-            ) : (
-              <>
-                <FiDownload /> PDF
-              </>
-            )}
-          </button> */}
             </div>
             </div>
 

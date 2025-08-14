@@ -18,6 +18,7 @@ import {
 import { usePatientAuth } from "@/context/patientAuthContext";
 import { Doctor } from "@/app/types";
 import { dayMap, generateHalfHourSlots } from "@/lib/utils";
+import LoaderSection from "@/components/loader";
 
 export default function BookingAppointmentPage() {
   const { patient } = usePatientAuth();
@@ -114,7 +115,9 @@ export default function BookingAppointmentPage() {
     }
   };
 
-  if (!doc) return <div>Loading...</div>;
+
+  if ( !doc)
+    return <LoaderSection />;
 
   // ✅ Parse timing like "8:00 AM - 8:30 PM"
   const parseTiming = (timing: string): [string, string] => {

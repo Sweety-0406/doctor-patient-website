@@ -6,6 +6,8 @@ import { useEffect, useState } from 'react';
 import { getFeedbackById } from '@/lib/api';
 import { FeedbackItem } from '@/app/types';
 import FeedbackDetailsModal from '@/components/feedback';
+import LoaderSection from '@/components/loader';
+import ErrorSection from '@/components/error';
 
 export default function IndividualFeedbackPage() {
   const { doctor, loading } = useDoctorAuth();
@@ -28,11 +30,12 @@ export default function IndividualFeedbackPage() {
     }
   };
 
-  if (loading) {
-    return <div>loading...</div>;
-  }
 
-  if (!doctor) return null;
+  if (loading )
+    return <LoaderSection />;
+
+  if ( !doctor)
+    return <ErrorSection />;
 
   return (
     <div className="pt-20 lg:pt-0 flex bg-white">

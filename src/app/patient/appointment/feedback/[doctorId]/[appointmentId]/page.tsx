@@ -1,43 +1,10 @@
-// "use client"
-
-// import Footer from "@/components/footer";
-// import RatingFeedback from "@/components/reviews";
-// import { usePatientAuth } from "@/context/patientAuthContext";
-// import { useParams } from "next/navigation";
-
-// interface PageProps {
-//   params: {
-//     doctorId: string;
-//     appointmentId: string;
-//   };
-// }
-
-// export default function AppointmentPage() {
-//   // const docId = params.doctorId;
-//   // const appId = params.appointmentId;
-//   const {doctorId, appointmentId} = useParams()
-//   const { patient, loading } = usePatientAuth();
-  
-//   if (loading || !patient) {
-//     return <div>Loading...</div>;
-//   }
-  
-//   return (
-//     <div className=" max-h-screen mx-auto">
-//         <div className="h-[90vh] overflow-y-scroll ">
-//           <RatingFeedback patientId={patient.id} doctorId={doctorId as string} appointmentId={appointmentId as string} />
-//         </div>
-//         <div className="h-[10vh] p-4  lg:mx-10">
-//             <Footer page="appointment" />
-//         </div>
-//     </div>
-//   );
-// }
 
 
 "use client";
 
+import ErrorSection from "@/components/error";
 import Footer from "@/components/footer";
+import LoaderSection from "@/components/loader";
 import RatingFeedback from "@/components/reviews";
 import { usePatientAuth } from "@/context/patientAuthContext";
 import { useParams, useSearchParams } from "next/navigation";
@@ -48,11 +15,13 @@ export default function AppointmentFeedbackPage() {
   const searchParams = useSearchParams();
   const mode = searchParams.get("mode");
 
-  if (loading || !patient) {
-    return <div>Loading...</div>;
-  }
+  if (loading )
+    return <LoaderSection />;
 
-  return (
+  if ( !patient)
+    return <ErrorSection />;
+
+  return ( 
     <div className="max-h-screen mx-auto">
       <div className="h-[90vh] overflow-y-scroll">
         <RatingFeedback

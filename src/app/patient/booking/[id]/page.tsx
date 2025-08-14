@@ -6,6 +6,7 @@ import { IoIosArrowDropright } from "react-icons/io";
 import { FaArrowLeft, FaCalendarAlt } from "react-icons/fa";
 import { Doctor } from "@/app/types";
 import { getNextAvailableSlot } from "@/lib/utils";
+import LoaderSection from "@/components/loader";
 
 export default function BookingPage() {
   const { id } = useParams(); 
@@ -22,7 +23,8 @@ export default function BookingPage() {
   }, [id]);
 
 
-  if (!doc) return <div>Loading...</div>;
+  if ( !doc)
+    return <LoaderSection />;
 
   const nextAvailable = getNextAvailableSlot({
     available: doc.available,

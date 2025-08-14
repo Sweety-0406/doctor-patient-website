@@ -341,20 +341,10 @@ const renderEventContent = (eventInfo: EventContentArg) => {
         : 'bg-gray-200';
 
     return (
-        // <div className={`px-1 py-[2.5px] w-full  rounded-sm shadow-lg ${bgColor} border ${borderColor} text-xs break-words whitespace-normal`}>
-        //     <p className="font-semibold text-gray-700 truncate whitespace-nowrap overflow-hidden">{eventInfo.event.title}</p>
-        //     {/* <p className="text-red-500 text-xs break-words whitespace-norma">{eventInfo.event.extendedProps.time}</p> */}
-        //     {status && (
-        //         <span className={`inline-block  mt-1 px-2 py-0.5 text-white text-[10px] rounded ${badgeColor}`}>
-        //             {status}
-        //         </span>
-        //     )}
-        // </div>
         <Tooltip >
             <TooltipTrigger className='w-full cursor-pointer'>
                 <div className={`px-1 py-[2.5px] w-full  rounded-sm shadow-lg ${bgColor} border ${borderColor} text-xs break-words whitespace-normal`}>
                     <p className="font-semibold text-gray-700 truncate whitespace-nowrap overflow-hidden">{eventInfo.event.title}</p>
-                    {/* <p className="text-red-500 text-xs break-words whitespace-norma">{eventInfo.event.extendedProps.time}</p> */}
                     {status && (
                         <span className={`inline-block  mt-1 px-2 py-0.5 text-white text-[10px] rounded ${badgeColor}`}>
                             {status}

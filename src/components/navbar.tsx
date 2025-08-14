@@ -4,18 +4,12 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
 import {  usePathname, useRouter } from "next/navigation"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 import { Button } from "./ui/button";
 import { GiHamburgerMenu } from "react-icons/gi";
 

@@ -16,6 +16,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { updateDoctorProfile } from "@/lib/api";
 import toast from "react-hot-toast";
+import LoaderSection from "@/components/loader";
+import ErrorSection from "@/components/error";
 
 export default function DoctorProfilePage() {
   const { doctor, loading, login } = useDoctorAuth();
@@ -54,6 +56,12 @@ export default function DoctorProfilePage() {
     setOpen(false);
   };
 
+  if (loading )
+    return <LoaderSection />;
+
+  if ( !doctor)
+    return <ErrorSection />;
+  
   return (
     <div className="max-h-screen min-h-screen overflow-y-scroll pt-20 lg:pt-0 flex bg-gray-50">
       <div className="p-6 w-full h-full ">
